@@ -1,0 +1,232 @@
+name: SQL Environment Template
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+        default: "dev"
+        description: "Specifies the environment of the deployment."
+      init_project_version:
+        required: false
+        type: string
+        default: "main"
+        description: "Specifies the version of the Init project."
+      target_server_uri:
+        required: true
+        type: string
+        description: "Specifies the target database uri of the SQL project."
+      target_database_name:
+        required: true
+        type: string
+        description: "Specifies the target database name of the SQL project."
+      mgmt_details:
+        required: true
+        type: string
+        description: "Specifies the mgmt details for the SQL deployment."
+      core_details:
+        required: true
+        type: string
+        description: "Specifies the core details for the SQL deployment."
+      extension_details:
+        required: true
+        type: string
+        description: "Specifies the extension details for the SQL deployment."
+    secrets:
+      TENANT_ID:
+        required: true
+        description: "Specifies the tenant id of the deployment."
+      CLIENT_ID:
+        required: true
+        description: "Specifies the client id."
+      CLIENT_SECRET:
+        required: true
+        description: "Specifies the client secret."
+      SUBSCRIPTION_ID:
+        required: true
+        description: "Specifies the client id."
+      PAT:
+        required: true
+        description: "Specifies the GitHub PAT."
+
+env:
+  SQL_PROJECT_NAME: "sqlDbProject"
+  SQL_BUILD_PATH: "code/sql"
+  SQL_BUILD_OUTPUT_PATH: "DatabaseRelease"
+  SQL_BUILD_ARTIFACT_NAME: "sqlBuild"
+  SQL_REPORT_ARTIFACT_NAME: "sqlReport"
+  SQL_REPORT_OUTPUT_PATH: "Report"
+
+jobs:
+  build:
+    name: Build SQL Project
+    runs-on: [self-hosted, linux, original]
+    continue-on-error: false
+    needs: []
+
+    steps:
+      # Check Out Repository
+      - name: Check Out Repository
+        id: checkout_repository
+        uses: actions/checkout@v3
+        with:
+          repository: Financial-Data-Pool/content-template
+          ref: ${{ inputs.init_project_version }}
+          token: ${{ secrets.PAT }}
+
+      # Build Database project
+      - name: Build Database project
+        id: dotnet_build
+        working-directory: ${{ env.SQL_BUILD_PATH }}
+        run: |
+          export HOME=$(pwd -P)
+          dotnet build /p:NetCoreBuild=true --configuration Release --output ./${{ env.SQL_BUILD_OUTPUT_PATH }}
+
+      # Upload SQL Package Artifacts
+      - name: Upload Build Artifacts
+        id: build_artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.SQL_BUILD_ARTIFACT_NAME }}
+          path: ${{ github.workspace }}/${{ env.SQL_BUILD_PATH }}/${{ env.SQL_BUILD_OUTPUT_PATH }}
+
+  report:
+    name: Report SQL Project Changes
+    runs-on: [self-hosted, linux, original]
+    continue-on-error: false
+    environment: ${{ inputs.environment }}
+    needs: [build]
+
+    steps:
+      # Download Build Artifact
+      - name: Download Build Artifact
+        id: artifact_download
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ env.SQL_BUILD_ARTIFACT_NAME }}
+          path: ${{ github.workspace }}/${{ env.SQL_BUILD_OUTPUT_PATH }}
+
+      # Login to Azure
+      - name: Azure Login
+        id: azure_login
+        uses: azure/login@v1
+        with:
+          creds: '{"clientId":"${{ secrets.CLIENT_ID }}","clientSecret":"${{ secrets.CLIENT_SECRET }}","subscriptionId":"${{ secrets.SUBSCRIPTION_ID }}","tenantId":"${{ secrets.TENANT_ID }}"}'
+
+      # Generate Azure Active Directory Token
+      - name: Generate Azure Active Directory Token
+        id: azure_access_token
+        run: |
+          echo "Set Azure Context"
+          az account set -s "${{ secrets.SUBSCRIPTION_ID }}"
+
+          echo "Create Azure Access Token"
+          ACCESS_TOKEN=$(az account get-access-token --scope "https://database.windows.net/.default" --query "accessToken" -o tsv)
+
+          echo "Set secret value"
+          echo "azureAccessToken=$ACCESS_TOKEN" >> "$GITHUB_OUTPUT"
+
+      # Create Output Directory
+      - name: Create Output Directory
+        id: output_directory
+        run: mkdir -p ${{ env.SQL_REPORT_OUTPUT_PATH }}
+
+      # Add sql package to path
+      - name: Add sqlpackage to PATH
+        id: sqlpackage_path
+        run: |
+          echo "/home/actions/sqlpackage" >> $GITHUB_PATH
+
+      # SQL Package Version
+      - name: SQL Package Version
+        id: sqlpackage_version
+        run: |
+          sqlpackage /Version
+
+      # SQL Package Deployment Report
+      - name: SQL Package Deployment Report
+        id: sqlpackage_deployreport
+        run: |
+          sqlpackage /Action:DeployReport /SourceFile:"${{ steps.artifact_download.outputs.download-path }}/${{ env.SQL_PROJECT_NAME }}.dacpac" /TargetServerName:"${{ inputs.target_server_uri }}" /TargetDatabaseName:"${{ inputs.target_database_name }}" /OutputPath:"./${{ env.SQL_REPORT_OUTPUT_PATH }}/deployReport.xml" /AccessToken:"${{ steps.azure_access_token.outputs.azureAccessToken }}" /p:VerifyCollationCompatibility=true /p:VerifyDeployment=true
+
+      # SQL Package Deployment Script
+      - name: SQL Package Deployment Script
+        id: sqlpackage_script
+        run: |
+          sqlpackage /Action:Script /SourceFile:"${{ steps.artifact_download.outputs.download-path }}/${{ env.SQL_PROJECT_NAME }}.dacpac" /TargetServerName:"${{ inputs.target_server_uri }}" /TargetDatabaseName:"${{ inputs.target_database_name }}" /OutputPath:"./${{ env.SQL_REPORT_OUTPUT_PATH }}/deployScript.sql" /AccessToken:"${{ steps.azure_access_token.outputs.azureAccessToken }}" /p:VerifyCollationCompatibility=true /p:VerifyDeployment=true
+
+      # Log out from Azure
+      - name: Log out from Azure
+        id: azure_logout
+        run: |
+          az logout
+
+      # Upload SQL Package Results
+      - name: Upload SQL Package Results
+        id: sqlpackage_results
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.SQL_REPORT_ARTIFACT_NAME }}
+          path: ${{ github.workspace }}/${{ env.SQL_REPORT_OUTPUT_PATH }}
+
+  deploy:
+    name: Deploy SQL Project
+    runs-on: [self-hosted, linux, original]
+    continue-on-error: false
+    environment: ${{ inputs.environment }}
+    # if: github.event_name == 'push' || github.event_name == 'release'
+    needs: [build, report]
+
+    steps:
+      # Download Build Artifact
+      - name: Download Build Artifact
+        id: artifact_download
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ env.SQL_BUILD_ARTIFACT_NAME }}
+          path: ${{ github.workspace }}/${{ env.SQL_BUILD_OUTPUT_PATH }}
+
+      # Login to Azure
+      - name: Azure Login
+        id: azure_login
+        uses: azure/login@v1
+        with:
+          creds: '{"clientId":"${{ secrets.CLIENT_ID }}","clientSecret":"${{ secrets.CLIENT_SECRET }}","subscriptionId":"${{ secrets.SUBSCRIPTION_ID }}","tenantId":"${{ secrets.TENANT_ID }}"}'
+
+      # Generate Azure Active Directory Token
+      - name: Generate Azure Active Directory Token
+        id: azure_access_token
+        run: |
+          echo "Set Azure Context"
+          az account set -s "${{ secrets.SUBSCRIPTION_ID }}"
+
+          echo "Create Azure Access Token"
+          ACCESS_TOKEN=$(az account get-access-token --scope "https://database.windows.net/.default" --query "accessToken" -o tsv)
+
+          echo "Set secret value"
+          echo "azureAccessToken=$ACCESS_TOKEN" >> "$GITHUB_OUTPUT"
+
+      # Add sql package to path
+      - name: Add sqlpackage to PATH
+        id: sqlpackage_path
+        run: |
+          echo "/home/actions/sqlpackage" >> $GITHUB_PATH
+
+      # SQL Package Version
+      - name: SQL Package Version
+        id: sqlpackage_version
+        run: |
+          sqlpackage /Version
+
+      # SQL Package Deployment
+      - name: SQL Package Deployment
+        id: sqlpackage_deployment
+        run: |
+          sqlpackage /Action:Publish /SourceFile:"${{ steps.artifact_download.outputs.download-path}}/${{ env.SQL_PROJECT_NAME }}.dacpac" /TargetServerName:"${{ inputs.target_server_uri }}" /TargetDatabaseName:"${{ inputs.target_database_name }}" /AccessToken:"${{ steps.azure_access_token.outputs.azureAccessToken }}" /Diagnostics:true /p:VerifyCollationCompatibility=true /p:VerifyDeployment=true /p:BlockOnPossibleDataLoss=true
+
+      # Log out from Azure
+      - name: Log out from Azure
+        id: azure_logout
+        run: |
+          az logout

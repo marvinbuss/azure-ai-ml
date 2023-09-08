@@ -1,0 +1,37 @@
+name: Release new major version
+on:
+  release:
+    types: [released]
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: "Tag name that the major tag will point to"
+        required: true
+
+env:
+  TAG_NAME: ${{ github.event.inputs.tag_name || github.event.release.tag_name }}
+
+jobs:
+  update_tag:
+    name: Update the major tag to include the ${{ github.event.inputs.tag_name || github.event.release.tag_name }} changes
+    runs-on: [self-hosted, linux]
+
+    steps:
+      # Checkout repository
+      - name: Check Out Repository
+        id: checkout_repository
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ env.TAG_NAME }}
+          token: ${{ secrets.PAT }}
+
+      - name: Get major version num and update tag
+        id: update_tag
+        run: |
+          export HOME=$(pwd -P)
+          VERSION=${{ env.TAG_NAME }}
+          MAJOR=${VERSION%%.*}
+          git config --global user.name 'github-action'
+          git config --global user.email 'github-action@users.noreply.github.com'
+          git tag -fa ${MAJOR} -m "Update major version tag"
+          git push origin ${MAJOR} --force

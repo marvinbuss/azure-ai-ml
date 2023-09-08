@@ -1,0 +1,204 @@
+name: Terraform Environment Template
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+        default: "dev"
+        description: "Specifies the environment of the deployment."
+      working_directory:
+        required: true
+        type: string
+        description: "Specifies the working directory."
+    secrets:
+      TENANT_ID:
+        required: true
+        description: "Specifies the tenant id of the deployment."
+      CLIENT_ID:
+        required: true
+        description: "Specifies the client id."
+      CLIENT_SECRET:
+        required: true
+        description: "Specifies the client secret."
+      SUBSCRIPTION_ID:
+        required: true
+        description: "Specifies the client id."
+      PAT:
+        required: true
+        description: "Specifies the GitHub PAT."
+      DNS_API_PASSWORD:
+        required: true
+        description: "Specifies the API Password for DNS entries."
+    outputs:
+      mgmt_synapse_workspace_resource_group_name:
+        description: "The resource group name of the management synapse workspace."
+        value: ${{ jobs.apply.outputs.mgmt_synapse_workspace_resource_group_name }}
+      mgmt_synapse_workspace_name:
+        description: "The name of the management synapse workspace."
+        value: ${{ jobs.apply.outputs.mgmt_synapse_workspace_name }}
+      mgmt_synapse_workspace_sql_pool_name:
+        description: "The name of the management synapse workspace SQL Pool."
+        value: ${{ jobs.apply.outputs.mgmt_synapse_workspace_sql_pool_name }}
+      mgmt_synapse_workspace_uri_sql:
+        description: "The uri of the management synapse workspace."
+        value: ${{ jobs.apply.outputs.mgmt_synapse_workspace_uri_sql }}
+      mgmt_details:
+        description: "Specifies the mgmt details for the SQL deployment."
+        value: ${{ jobs.apply.outputs.mgmt_details }}
+      core_details:
+        description: "Specifies the core details for the SQL deployment."
+        value: ${{ jobs.apply.outputs.core_details }}
+      extension_details:
+        description: "Specifies the extension details for the SQL deployment."
+        value: ${{ jobs.apply.outputs.extension_details }}
+
+jobs:
+  lint:
+    name: Terraform Lint
+    runs-on: [self-hosted, linux, original]
+    continue-on-error: false
+    needs: []
+
+    steps:
+      # Check Out Repository
+      - name: Check Out Repository
+        id: checkout_repository
+        uses: actions/checkout@v3
+
+      # Terraform Format
+      - name: Terraform Format
+        id: terraform_format
+        working-directory: ${{ inputs.working_directory }}
+        run: |
+          terraform fmt -check -recursive
+
+  plan:
+    name: Terraform Plan
+    runs-on: [self-hosted, linux, original]
+    continue-on-error: false
+    environment: ${{ inputs.environment }}
+    needs: [lint]
+
+    env:
+      ARM_TENANT_ID: ${{ secrets.TENANT_ID }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
+      ARM_CLIENT_ID: ${{ secrets.CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+      ARM_USE_OIDC: false
+
+    steps:
+      # Check Out Repository
+      - name: Check Out Repository
+        id: checkout_repository
+        uses: actions/checkout@v3
+
+      # Terraform Init
+      - name: Terraform Init
+        id: terraform_init
+        working-directory: ${{ inputs.working_directory }}
+        run: |
+          export HOME=$(pwd -P)
+          git config --global url."https://$PAT@github.developer.allianz.io".insteadOf https://github.developer.allianz.io
+          terraform init
+        env:
+          PAT: ${{ secrets.PAT }}
+
+      # Terraform Validate
+      - name: Terraform Validate
+        id: terraform_validate
+        working-directory: ${{ inputs.working_directory }}
+        run: |
+          terraform validate
+
+      # Terraform Plan
+      - name: Terraform Plan
+        id: terraform_plan
+        working-directory: ${{ inputs.working_directory }}
+        run: |
+          terraform plan -var-file vars.${{ inputs.environment }}.tfvars -var='dns_api_password=${{ secrets.DNS_API_PASSWORD }}' -input=false
+
+  apply:
+    name: Terraform Apply
+    runs-on: [self-hosted, linux, original]
+    continue-on-error: false
+    environment: ${{ inputs.environment }}
+    # if: github.event_name == 'push' || github.event_name == 'release'
+    needs: [lint, plan]
+    outputs:
+      mgmt_synapse_workspace_resource_group_name: ${{ steps.terraform_outputs.outputs.mgmt_synapse_workspace_resource_group_name }}
+      mgmt_synapse_workspace_name: ${{ steps.terraform_outputs.outputs.mgmt_synapse_workspace_name }}
+      mgmt_synapse_workspace_sql_pool_name: ${{ steps.terraform_outputs.outputs.mgmt_synapse_workspace_sql_pool_name }}
+      mgmt_synapse_workspace_uri_sql: ${{ steps.terraform_outputs.outputs.mgmt_synapse_workspace_uri_sql }}
+      mgmt_details: ${{ steps.terraform_outputs.outputs.mgmt_details }}
+      core_details: ${{ steps.terraform_outputs.outputs.core_details }}
+      extension_details: ${{ steps.terraform_outputs.outputs.extension_details }}
+
+    env:
+      ARM_TENANT_ID: ${{ secrets.TENANT_ID }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
+      ARM_CLIENT_ID: ${{ secrets.CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+      ARM_USE_OIDC: false
+
+    steps:
+      # Check Out Repository
+      - name: Check Out Repository
+        id: checkout_repository
+        uses: actions/checkout@v3
+
+      # Login to Azure
+      - name: Azure Login
+        id: azure_login
+        uses: azure/login@v1
+        with:
+          creds: '{"clientId":"${{ secrets.CLIENT_ID }}","clientSecret":"${{ secrets.CLIENT_SECRET }}","subscriptionId":"${{ secrets.SUBSCRIPTION_ID }}","tenantId":"${{ secrets.TENANT_ID }}"}'
+
+      # Terraform Init
+      - name: Terraform Init
+        working-directory: ${{ inputs.working_directory }}
+        run: |
+          export HOME=$(pwd -P)
+          git config --global url."https://$PAT@github.developer.allianz.io".insteadOf https://github.developer.allianz.io
+          terraform init
+        env:
+          PAT: ${{ secrets.PAT }}
+
+      # Terraform Apply
+      - name: Terraform Apply
+        working-directory: ${{ inputs.working_directory }}
+        run: |
+          terraform apply -var-file vars.${{ inputs.environment }}.tfvars  -var='dns_api_password=${{ secrets.DNS_API_PASSWORD }}' -auto-approve -input=false
+
+      # Terraform Export Outputs
+      - name: Terraform Export Outputs
+        id: terraform_outputs
+        working-directory: ${{ inputs.working_directory }}
+        run: |
+          mgmt_synapse_workspace_resource_group_name=$(terraform output -raw mgmt_synapse_workspace_resource_group_name)
+          echo "mgmt_synapse_workspace_resource_group_name=$mgmt_synapse_workspace_resource_group_name" >> "$GITHUB_OUTPUT"
+
+          mgmt_synapse_workspace_name=$(terraform output -raw mgmt_synapse_workspace_name)
+          echo "mgmt_synapse_workspace_name=$mgmt_synapse_workspace_name" >> "$GITHUB_OUTPUT"
+
+          mgmt_synapse_workspace_sql_pool_name=$(terraform output -raw mgmt_synapse_workspace_sql_pool_name)
+          echo "mgmt_synapse_workspace_sql_pool_name=$mgmt_synapse_workspace_sql_pool_name" >> "$GITHUB_OUTPUT"
+
+          mgmt_synapse_workspace_uri_sql=$(terraform output -raw mgmt_synapse_workspace_uri_sql)
+          echo "mgmt_synapse_workspace_uri_sql=$mgmt_synapse_workspace_uri_sql" >> "$GITHUB_OUTPUT"
+
+          mgmt_details=$(terraform output -raw mgmt_details)
+          echo "mgmt_details=$mgmt_details" >> "$GITHUB_OUTPUT"
+
+          core_details=$(terraform output -raw core_details)
+          echo "core_details=$core_details" >> "$GITHUB_OUTPUT"
+
+          extension_details=$(terraform output -raw extension_details)
+          echo "extension_details=$extension_details" >> "$GITHUB_OUTPUT"
+
+      # Log out from Azure
+      - name: Log out from Azure
+        id: azure_logout
+        run: |
+          az logout
