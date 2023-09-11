@@ -51,7 +51,7 @@ env:
 jobs:
   validation:
     name: Synapse Validation
-    runs-on: [self-hosted, linux, original]
+    runs-on: [self-hosted]
     continue-on-error: false
     needs: []
 
@@ -78,7 +78,7 @@ jobs:
 
   deploy:
     name: Synapse Deployment
-    runs-on: [self-hosted, linux, original]
+    runs-on: [self-hosted]
     continue-on-error: false
     environment: ${{ inputs.environment }}
     needs: [validation]

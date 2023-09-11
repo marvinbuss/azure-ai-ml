@@ -10,7 +10,8 @@ on:
 jobs:
   lint:
     name: Lint and Test
-    runs-on: [original]
+    runs-on: [ubuntu-latest]
+    continue-on-error: false
 
     steps:
       # Checkout repository

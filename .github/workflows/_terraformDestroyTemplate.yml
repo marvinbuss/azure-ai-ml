@@ -35,7 +35,7 @@ on:
 jobs:
   deployment:
     name: Terraform Destroy
-    runs-on: [self-hosted, linux, original]
+    runs-on: [self-hosted]
     continue-on-error: false
     environment: ${{ inputs.environment }}
 

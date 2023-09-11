@@ -61,7 +61,7 @@ env:
 jobs:
   build:
     name: Build SQL Project
-    runs-on: [self-hosted, linux, original]
+    runs-on: [self-hosted]
     continue-on-error: false
     needs: []
 
@@ -93,7 +93,7 @@ jobs:
 
   report:
     name: Report SQL Project Changes
-    runs-on: [self-hosted, linux, original]
+    runs-on: [self-hosted]
     continue-on-error: false
     environment: ${{ inputs.environment }}
     needs: [build]
@@ -172,7 +172,7 @@ jobs:
 
   deploy:
     name: Deploy SQL Project
-    runs-on: [self-hosted, linux, original]
+    runs-on: [self-hosted]
     continue-on-error: false
     environment: ${{ inputs.environment }}
     # if: github.event_name == 'push' || github.event_name == 'release'
