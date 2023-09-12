@@ -14,7 +14,7 @@ env:
 jobs:
   update_tag:
     name: Update the major tag to include the ${{ github.event.inputs.tag_name || github.event.release.tag_name }} changes
-    runs-on: [self-hosted, linux]
+    runs-on: [ubuntu-latest]
 
     steps:
       # Checkout repository
@@ -28,7 +28,6 @@ jobs:
       - name: Get major version num and update tag
         id: update_tag
         run: |
-          export HOME=$(pwd -P)
           VERSION=${{ env.TAG_NAME }}
           MAJOR=${VERSION%%.*}
           git config --global user.name 'github-action'

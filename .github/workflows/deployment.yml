@@ -29,64 +29,8 @@ jobs:
     with:
       environment: "dev"
       working_directory: "./tests/e2e"
+      subscription_id: "8f171ff9-2b5b-4f0f-aed5-7fa360a1d094"
     secrets:
       TENANT_ID: ${{ secrets.TENANT_ID }}
       CLIENT_ID: ${{ secrets.CLIENT_ID }}
       CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
-      SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
-      PAT: ${{ secrets.PAT }}
-      DNS_API_PASSWORD: ${{ secrets.DNS_API_PASSWORD }}
-
-  sql:
-    uses: ./.github/workflows/_sqlEnvironmentTemplate.yml
-    name: "SQL Deployment"
-    needs: [terraform]
-    # if: github.event_name == 'push' || github.event_name == 'release'
-    with:
-      environment: "dev"
-      init_project_version: "main"
-      target_server_uri: ${{ needs.terraform.outputs.mgmt_synapse_workspace_uri_sql }}
-      target_database_name: ${{ needs.terraform.outputs.mgmt_synapse_workspace_sql_pool_name }}
-      mgmt_details: ${{ needs.terraform.outputs.mgmt_details }}
-      core_details: ${{ needs.terraform.outputs.core_details }}
-      extension_details: ${{ needs.terraform.outputs.extension_details }}
-    secrets:
-      TENANT_ID: ${{ secrets.TENANT_ID }}
-      CLIENT_ID: ${{ secrets.CLIENT_ID }}
-      CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
-      SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
-      PAT: ${{ secrets.PAT }}
-
-  synapse:
-    uses: ./.github/workflows/_synapseEnvironmentTemplate.yml
-    name: "Synapse Deployment"
-    needs: [terraform]
-    # if: github.event_name == 'push' || github.event_name == 'release'
-    with:
-      environment: "dev"
-      init_project_version: "main"
-      target_synapse_workspace_name: ${{ needs.terraform.outputs.mgmt_synapse_workspace_name }}
-      target_synapse_workspace_resource_group_name: ${{ needs.terraform.outputs.mgmt_synapse_workspace_resource_group_name }}
-      deployment: true
-    secrets:
-      TENANT_ID: ${{ secrets.TENANT_ID }}
-      CLIENT_ID: ${{ secrets.CLIENT_ID }}
-      CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
-      SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
-      PAT: ${{ secrets.PAT }}
-
-  terraform_destroy:
-    uses: ./.github/workflows/_terraformDestroyTemplate.yml
-    name: "Terraform Destroy"
-    needs: [sql, synapse]
-    if: github.event_name == 'push' || github.event_name == 'release'
-    with:
-      environment: "dev"
-      working_directory: "./tests/e2e"
-    secrets:
-      TENANT_ID: ${{ secrets.TENANT_ID }}
-      CLIENT_ID: ${{ secrets.CLIENT_ID }}
-      CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
-      SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
-      PAT: ${{ secrets.PAT }}
-      DNS_API_PASSWORD: ${{ secrets.DNS_API_PASSWORD }}

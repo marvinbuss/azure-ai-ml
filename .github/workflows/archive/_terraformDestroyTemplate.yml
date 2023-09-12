@@ -12,6 +12,10 @@ on:
         required: true
         type: string
         description: "Specifies the working directory."
+      subscription_id:
+        required: true
+        type: string
+        description: "Specifies the Azure subscription id."
     secrets:
       TENANT_ID:
         required: true
@@ -22,26 +26,17 @@ on:
       CLIENT_SECRET:
         required: true
         description: "Specifies the client secret."
-      SUBSCRIPTION_ID:
-        required: true
-        description: "Specifies the client id."
-      PAT:
-        required: true
-        description: "Specifies the GitHub PAT."
-      DNS_API_PASSWORD:
-        required: true
-        description: "Specifies the API Password for DNS entries."
 
 jobs:
   deployment:
     name: Terraform Destroy
-    runs-on: [self-hosted, linux, original]
+    runs-on: [self-hosted]
     continue-on-error: false
     environment: ${{ inputs.environment }}
 
     env:
       ARM_TENANT_ID: ${{ secrets.TENANT_ID }}
-      ARM_SUBSCRIPTION_ID: ${{ secrets.SUBSCRIPTION_ID }}
+      ARM_SUBSCRIPTION_ID: ${{ inputs.subscription_id }}
       ARM_CLIENT_ID: ${{ secrets.CLIENT_ID }}
       ARM_CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
       ARM_USE_OIDC: false
@@ -57,20 +52,16 @@ jobs:
         id: azure_login
         uses: azure/login@v1
         with:
-          creds: '{"clientId":"${{ secrets.CLIENT_ID }}","clientSecret":"${{ secrets.CLIENT_SECRET }}","subscriptionId":"${{ secrets.SUBSCRIPTION_ID }}","tenantId":"${{ secrets.TENANT_ID }}"}'
+          creds: '{"clientId":"${{ secrets.CLIENT_ID }}","clientSecret":"${{ secrets.CLIENT_SECRET }}","subscriptionId":"${{ inputs.subscription_id }}","tenantId":"${{ secrets.TENANT_ID }}"}'
 
       # Terraform Init
       - name: Terraform Init
         working-directory: ${{ inputs.working_directory }}
         run: |
-          export HOME=$(pwd -P)
-          git config --global url."https://$PAT@github.developer.allianz.io".insteadOf https://github.developer.allianz.io
           terraform init
-        env:
-          PAT: ${{ secrets.PAT }}
 
       # Terraform Destroy
       - name: Terraform Destroy
         working-directory: ${{ inputs.working_directory }}
         run: |
-          terraform apply -var-file vars.${{ inputs.environment }}.tfvars  -var='dns_api_password=${{ secrets.DNS_API_PASSWORD }}' -auto-approve -input=false -destroy
+          terraform apply -var-file vars.${{ inputs.environment }}.tfvars  -auto-approve -input=false -destroy

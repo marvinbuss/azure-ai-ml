@@ -8,11 +8,10 @@ on:
         type: string
         default: "dev"
         description: "Specifies the environment of the deployment."
-      init_project_version:
-        required: false
+      subscription_id:
+        required: true
         type: string
-        default: "main"
-        description: "Specifies the version of the Init project."
+        description: "Specifies the Azure subscription id."
       target_server_uri:
         required: true
         type: string
@@ -21,18 +20,6 @@ on:
         required: true
         type: string
         description: "Specifies the target database name of the SQL project."
-      mgmt_details:
-        required: true
-        type: string
-        description: "Specifies the mgmt details for the SQL deployment."
-      core_details:
-        required: true
-        type: string
-        description: "Specifies the core details for the SQL deployment."
-      extension_details:
-        required: true
-        type: string
-        description: "Specifies the extension details for the SQL deployment."
     secrets:
       TENANT_ID:
         required: true
@@ -43,12 +30,6 @@ on:
       CLIENT_SECRET:
         required: true
         description: "Specifies the client secret."
-      SUBSCRIPTION_ID:
-        required: true
-        description: "Specifies the client id."
-      PAT:
-        required: true
-        description: "Specifies the GitHub PAT."
 
 env:
   SQL_PROJECT_NAME: "sqlDbProject"
@@ -61,7 +42,7 @@ env:
 jobs:
   build:
     name: Build SQL Project
-    runs-on: [self-hosted, linux, original]
+    runs-on: [self-hosted]
     continue-on-error: false
     needs: []
 
@@ -70,17 +51,12 @@ jobs:
       - name: Check Out Repository
         id: checkout_repository
         uses: actions/checkout@v3
-        with:
-          repository: Financial-Data-Pool/content-template
-          ref: ${{ inputs.init_project_version }}
-          token: ${{ secrets.PAT }}
 
       # Build Database project
       - name: Build Database project
         id: dotnet_build
         working-directory: ${{ env.SQL_BUILD_PATH }}
         run: |
-          export HOME=$(pwd -P)
           dotnet build /p:NetCoreBuild=true --configuration Release --output ./${{ env.SQL_BUILD_OUTPUT_PATH }}
 
       # Upload SQL Package Artifacts
@@ -93,7 +69,7 @@ jobs:
 
   report:
     name: Report SQL Project Changes
-    runs-on: [self-hosted, linux, original]
+    runs-on: [self-hosted]
     continue-on-error: false
     environment: ${{ inputs.environment }}
     needs: [build]
@@ -112,14 +88,14 @@ jobs:
         id: azure_login
         uses: azure/login@v1
         with:
-          creds: '{"clientId":"${{ secrets.CLIENT_ID }}","clientSecret":"${{ secrets.CLIENT_SECRET }}","subscriptionId":"${{ secrets.SUBSCRIPTION_ID }}","tenantId":"${{ secrets.TENANT_ID }}"}'
+          creds: '{"clientId":"${{ secrets.CLIENT_ID }}","clientSecret":"${{ secrets.CLIENT_SECRET }}","subscriptionId":"${{ inputs.subscription_id }}","tenantId":"${{ secrets.TENANT_ID }}"}'
 
       # Generate Azure Active Directory Token
       - name: Generate Azure Active Directory Token
         id: azure_access_token
         run: |
           echo "Set Azure Context"
-          az account set -s "${{ secrets.SUBSCRIPTION_ID }}"
+          az account set -s "${{ inputs.subscription_id }}"
 
           echo "Create Azure Access Token"
           ACCESS_TOKEN=$(az account get-access-token --scope "https://database.windows.net/.default" --query "accessToken" -o tsv)
@@ -131,12 +107,6 @@ jobs:
       - name: Create Output Directory
         id: output_directory
         run: mkdir -p ${{ env.SQL_REPORT_OUTPUT_PATH }}
-
-      # Add sql package to path
-      - name: Add sqlpackage to PATH
-        id: sqlpackage_path
-        run: |
-          echo "/home/actions/sqlpackage" >> $GITHUB_PATH
 
       # SQL Package Version
       - name: SQL Package Version
@@ -172,7 +142,7 @@ jobs:
 
   deploy:
     name: Deploy SQL Project
-    runs-on: [self-hosted, linux, original]
+    runs-on: [self-hosted]
     continue-on-error: false
     environment: ${{ inputs.environment }}
     # if: github.event_name == 'push' || github.event_name == 'release'
@@ -192,26 +162,20 @@ jobs:
         id: azure_login
         uses: azure/login@v1
         with:
-          creds: '{"clientId":"${{ secrets.CLIENT_ID }}","clientSecret":"${{ secrets.CLIENT_SECRET }}","subscriptionId":"${{ secrets.SUBSCRIPTION_ID }}","tenantId":"${{ secrets.TENANT_ID }}"}'
+          creds: '{"clientId":"${{ secrets.CLIENT_ID }}","clientSecret":"${{ secrets.CLIENT_SECRET }}","subscriptionId":"${{ inputs.subscription_id }}","tenantId":"${{ secrets.TENANT_ID }}"}'
 
       # Generate Azure Active Directory Token
       - name: Generate Azure Active Directory Token
         id: azure_access_token
         run: |
           echo "Set Azure Context"
-          az account set -s "${{ secrets.SUBSCRIPTION_ID }}"
+          az account set -s "${{ inputs.subscription_id }}"
 
           echo "Create Azure Access Token"
           ACCESS_TOKEN=$(az account get-access-token --scope "https://database.windows.net/.default" --query "accessToken" -o tsv)
 
           echo "Set secret value"
           echo "azureAccessToken=$ACCESS_TOKEN" >> "$GITHUB_OUTPUT"
-
-      # Add sql package to path
-      - name: Add sqlpackage to PATH
-        id: sqlpackage_path
-        run: |
-          echo "/home/actions/sqlpackage" >> $GITHUB_PATH
 
       # SQL Package Version
       - name: SQL Package Version
