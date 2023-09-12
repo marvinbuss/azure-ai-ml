@@ -57,7 +57,7 @@ jobs:
       # Validate Synapse Artifacts
       - name: Validate Synapse Artifacts
         id: validation_synapse
-        uses: azure/synapse-workspace-deployment@V1.7.0
+        uses: azure/synapse-workspace-deployment@V1.8.0
         with:
           TargetWorkspaceName: ${{ inputs.target_synapse_workspace_name }}
           ArtifactsFolder: ${{ env.SYNAPSE_ARTIFACTS_PATH }}
@@ -109,7 +109,7 @@ jobs:
       # Deploy Synapse Artifacts
       - name: Deploy Synapse Artifacts
         id: deployment_synapse
-        uses: azure/synapse-workspace-deployment@V1.7.0
+        uses: azure/synapse-workspace-deployment@V1.8.0
         with:
           TargetWorkspaceName: ${{ inputs.target_synapse_workspace_name }}
           resourceGroup: ${{ inputs.target_synapse_workspace_resource_group_name }}
