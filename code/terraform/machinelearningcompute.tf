@@ -2,7 +2,6 @@ resource "azurerm_machine_learning_compute_cluster" "machine_learning_compute_cl
   machine_learning_workspace_id = azurerm_machine_learning_workspace.machine_learning_workspace.id
   name                          = "builder001"
   location                      = var.location
-  resource_group_name           = data.azurerm_resource_group.resource_group.name
   tags                          = var.tags
   identity {
     type = "UserAssigned"
@@ -33,7 +32,6 @@ resource "azurerm_machine_learning_compute_cluster" "machine_learning_compute_cl
   machine_learning_workspace_id = azurerm_machine_learning_workspace.machine_learning_workspace.id
   name                          = each.key
   location                      = var.location
-  resource_group_name           = data.azurerm_resource_group.resource_group.name
   tags                          = var.tags
   identity {
     type = "UserAssigned"
@@ -64,7 +62,6 @@ resource "azurerm_machine_learning_compute_instance" "machine_learning_compute_i
   machine_learning_workspace_id = azurerm_machine_learning_workspace.machine_learning_workspace.id
   name                          = each.key
   location                      = var.location
-  resource_group_name           = data.azurerm_resource_group.resource_group.name
   tags                          = var.tags
   identity {
     type = "UserAssigned"
