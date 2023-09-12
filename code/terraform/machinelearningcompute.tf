@@ -24,6 +24,11 @@ resource "azurerm_machine_learning_compute_cluster" "machine_learning_compute_cl
   depends_on = [
     azapi_update_resource.machine_learning_managed_network
   ]
+  lifecycle {
+    ignore_changes = [
+      subnet_resource_id
+    ]
+  }
 }
 
 resource "azurerm_machine_learning_compute_cluster" "machine_learning_compute_cluster" {
@@ -49,11 +54,16 @@ resource "azurerm_machine_learning_compute_cluster" "machine_learning_compute_cl
   }
   ssh_public_access_enabled = false
   vm_priority               = each.value.vm_priority
-  vm_size                   = each.value.vm_size
+  vm_size                   = upper(each.value.vm_size)
 
   depends_on = [
     azapi_update_resource.machine_learning_managed_network
   ]
+  lifecycle {
+    ignore_changes = [
+      subnet_resource_id
+    ]
+  }
 }
 
 resource "azurerm_machine_learning_compute_instance" "machine_learning_compute_instance" {
@@ -77,9 +87,14 @@ resource "azurerm_machine_learning_compute_instance" "machine_learning_compute_i
   authorization_type   = "personal"
   description          = ""
   local_auth_enabled   = false
-  virtual_machine_size = each.value.vm_size
+  virtual_machine_size = upper(each.value.vm_size)
 
   depends_on = [
     azapi_update_resource.machine_learning_managed_network
   ]
+  lifecycle {
+    ignore_changes = [
+      subnet_resource_id
+    ]
+  }
 }

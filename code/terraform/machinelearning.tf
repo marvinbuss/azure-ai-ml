@@ -47,17 +47,6 @@ resource "azapi_update_resource" "machine_learning_managed_network" {
           sparkReady = true
         }
         outboundRules = {
-          "${azurerm_storage_account.storage.name}-file" = {
-            type     = "PrivateEndpoint"
-            category = "UserDefined"
-            status   = "Active"
-            destination = {
-              serviceResourceId = azurerm_storage_account.storage.id
-              subresourceTarget = "file"
-              sparkEnabled      = true
-              sparkStatus       = "Active"
-            }
-          },
           "${azurerm_storage_account.storage.name}-table" = {
             type     = "PrivateEndpoint"
             category = "UserDefined"
