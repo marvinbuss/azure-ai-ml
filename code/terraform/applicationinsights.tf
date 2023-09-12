@@ -13,7 +13,7 @@ resource "azurerm_application_insights" "application_insights" {
   local_authentication_disabled         = false # Can be switched once AAD auth is supported
   retention_in_days                     = 90
   sampling_percentage                   = 100
-  workspace_id                          = var.log_analytics_workspace_id
+  workspace_id                          = azurerm_log_analytics_workspace.log_analytics_workspace.id
 }
 
 data "azurerm_monitor_diagnostic_categories" "diagnostic_categories_application_insights" {
