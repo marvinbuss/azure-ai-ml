@@ -8,11 +8,10 @@ on:
         type: string
         default: "dev"
         description: "Specifies the environment of the deployment."
-      init_project_version:
-        required: false
+      subscription_id:
+        required: true
         type: string
-        default: "main"
-        description: "Specifies the version of the Init project."
+        description: "Specifies the Azure subscription id."
       target_synapse_workspace_name:
         required: true
         type: string
@@ -36,15 +35,9 @@ on:
       CLIENT_SECRET:
         required: true
         description: "Specifies the client secret."
-      SUBSCRIPTION_ID:
-        required: true
-        description: "Specifies the client id."
-      PAT:
-        required: true
-        description: "Specifies the GitHub PAT."
 
 env:
-  SOURCE_SYNAPSE_WORKSPACE_NAME: "synw-spf-0003-dev-we1-01"
+  SOURCE_SYNAPSE_WORKSPACE_NAME: ""
   SYNAPSE_ARTIFACTS_PATH: "code/synapse"
   SYNAPSE_DEPLOYMENT_SCRIPT_PATH: "code/scripts"
 
@@ -60,10 +53,6 @@ jobs:
       - name: Check Out Repository
         id: checkout_repository
         uses: actions/checkout@v3
-        with:
-          repository: Financial-Data-Pool/simplifi-db-development
-          ref: ${{ inputs.init_project_version }}
-          token: ${{ secrets.PAT }}
 
       # Validate Synapse Artifacts
       - name: Validate Synapse Artifacts
@@ -85,28 +74,16 @@ jobs:
 
     steps:
       # Check Out Repository
-      - name: Check Out Rollout Repository
-        id: checkout_repository_rollout
+      - name: Check Out Repository
+        id: checkout_repository
         uses: actions/checkout@v3
-        with:
-          path: rollout
-
-      # Check Out Repository
-      - name: Check Out Synapse Repository
-        id: checkout_repository_synapse
-        uses: actions/checkout@v3
-        with:
-          repository: Financial-Data-Pool/simplifi-db-development
-          ref: ${{ inputs.init_project_version }}
-          token: ${{ secrets.PAT }}
-          path: synapse
 
       # Login to Azure
       - name: Azure Login
         id: azure_login
         uses: azure/login@v1
         with:
-          creds:  '{"clientId":"${{ secrets.CLIENT_ID }}","clientSecret":"${{ secrets.CLIENT_SECRET }}","subscriptionId":"${{ secrets.SUBSCRIPTION_ID }}","tenantId":"${{ secrets.TENANT_ID }}"}'
+          creds:  '{"clientId":"${{ secrets.CLIENT_ID }}","clientSecret":"${{ secrets.CLIENT_SECRET }}","subscriptionId":"${{ inputs.subscription_id }}","tenantId":"${{ secrets.TENANT_ID }}"}'
           enable-AzPSSession: true
 
       # Install Required Modules
@@ -123,7 +100,7 @@ jobs:
         id: synapse_preprocessing
         run: |
           ./SynapseRolloutPreprocessing.ps1 `
-            -SubscriptionId "${{ secrets.SUBSCRIPTION_ID }}" `
+            -SubscriptionId "${{ inputs.subscription_id }}" `
             -SynapseWorkspaceName "${{ inputs.target_synapse_workspace_name }}" `
             -CheckPastDaysOfPipelineRuns 1
         shell: pwsh
@@ -145,7 +122,7 @@ jobs:
           DeleteArtifactsNotInTemplate: false
           Environment: "Azure Public"
           tenantId: ${{ secrets.TENANT_ID }}
-          subscriptionId: ${{ secrets.SUBSCRIPTION_ID }}
+          subscriptionId: ${{ inputs.subscription_id }}
           clientId: ${{ secrets.CLIENT_ID }}
           clientSecret: ${{ secrets.CLIENT_SECRET }}
           managedIdentity: false
@@ -155,7 +132,7 @@ jobs:
       #   id: synapse_postprocessing
       #   run: |
       #     ./SynapseRolloutPostprocessing.ps1 `
-      #       -SubscriptionId "${{ secrets.SUBSCRIPTION_ID }}" `
+      #       -SubscriptionId "${{ inputs.subscription_id }}" `
       #       -SynapseWorkspaceName "${{ inputs.target_synapse_workspace_name }}" `
       #       -TriggerNames "${{ steps.synapse_preprocessing.outputs.triggerNames }}"
       #   shell: pwsh

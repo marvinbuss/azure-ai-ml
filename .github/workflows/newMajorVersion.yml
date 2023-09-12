@@ -28,7 +28,6 @@ jobs:
       - name: Get major version num and update tag
         id: update_tag
         run: |
-          export HOME=$(pwd -P)
           VERSION=${{ env.TAG_NAME }}
           MAJOR=${VERSION%%.*}
           git config --global user.name 'github-action'
