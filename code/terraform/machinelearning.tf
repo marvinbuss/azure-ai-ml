@@ -30,8 +30,7 @@ resource "azurerm_machine_learning_workspace" "machine_learning_workspace" {
     azurerm_role_assignment.uai_role_assignment_storage_blob_contributor,
     azurerm_role_assignment.uai_role_assignment_key_vault_contributor,
     azurerm_role_assignment.uai_role_assignment_key_vault_administrator,
-    azurerm_role_assignment.uai_role_assignment_application_insights_contributor,
-    azurerm_role_assignment.uai_role_assignment_machine_learning_workspace_contributor
+    azurerm_role_assignment.uai_role_assignment_application_insights_contributor
   ]
 }
 
