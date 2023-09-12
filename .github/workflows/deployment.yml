@@ -30,6 +30,7 @@ jobs:
       environment: "dev"
       working_directory: "./tests/e2e"
       subscription_id: "8f171ff9-2b5b-4f0f-aed5-7fa360a1d094"
+      export_terraform_outputs: false
     secrets:
       TENANT_ID: ${{ secrets.TENANT_ID }}
       CLIENT_ID: ${{ secrets.CLIENT_ID }}
