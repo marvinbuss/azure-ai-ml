@@ -1,4 +1,4 @@
-resource "azurerm_machine_learning_compute_cluster" "machine_learning_compute_cluster" {
+resource "azurerm_machine_learning_compute_cluster" "machine_learning_compute_cluster_image_build" {
   machine_learning_workspace_id = azurerm_machine_learning_workspace.machine_learning_workspace.id
   name                          = "builder001"
   location                      = var.location
@@ -11,7 +11,7 @@ resource "azurerm_machine_learning_compute_cluster" "machine_learning_compute_cl
     ]
   }
 
-  description            = "Compute Clutser to build Container Images"
+  description            = "Compute Cluster to build container images"
   local_auth_enabled     = false
   node_public_ip_enabled = false
   scale_settings {
