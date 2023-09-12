@@ -14,8 +14,9 @@ resource "azurerm_machine_learning_compute_cluster" "machine_learning_compute_cl
   local_auth_enabled     = false
   node_public_ip_enabled = false
   scale_settings {
-    min_node_count = 0
-    max_node_count = 1
+    min_node_count                       = 0
+    max_node_count                       = 1
+    scale_down_nodes_after_idle_duration = "PT30S"
   }
   ssh_public_access_enabled = false
   vm_priority               = "Dedicated"
@@ -44,8 +45,9 @@ resource "azurerm_machine_learning_compute_cluster" "machine_learning_compute_cl
   local_auth_enabled     = false
   node_public_ip_enabled = false
   scale_settings {
-    min_node_count = each.value.scale.min_node_count
-    max_node_count = each.value.scale.max_node_count
+    min_node_count                       = each.value.scale.min_node_count
+    max_node_count                       = each.value.scale.max_node_count
+    scale_down_nodes_after_idle_duration = each.value.scale.scale_down_nodes_after_idle_duration
   }
   ssh_public_access_enabled = false
   vm_priority               = each.value.vm_priority

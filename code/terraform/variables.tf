@@ -57,8 +57,9 @@ variable "machine_learning_compute_clusters" {
     vm_priority = optional(string, "Dedicated")
     vm_size     = optional(string, "Standard_DS2_v2")
     scale = object({
-      min_node_count = optional(any, 0)
-      max_node_count = optional(any, 3)
+      min_node_count                       = optional(any, 0)
+      max_node_count                       = optional(any, 3)
+      scale_down_nodes_after_idle_duration = optional(string, "PT60S")
     })
   }))
   sensitive   = false

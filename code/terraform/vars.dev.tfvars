@@ -9,8 +9,9 @@ machine_learning_compute_clusters = {
     vm_priority = "Dedicated"
     vm_size     = "Standard_DS2_v2"
     scale = {
-      min_node_count = 0
-      max_node_count = 3
+      min_node_count                       = 0
+      max_node_count                       = 3
+      scale_down_nodes_after_idle_duration = "PT30S"
     }
   }
 }
