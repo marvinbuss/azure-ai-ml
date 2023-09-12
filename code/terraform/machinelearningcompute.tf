@@ -10,9 +10,8 @@ resource "azurerm_machine_learning_compute_cluster" "machine_learning_compute_cl
     ]
   }
 
-  description            = "Compute Cluster to build container images"
-  local_auth_enabled     = false
-  # node_public_ip_enabled = false
+  description        = "Compute Cluster to build container images"
+  local_auth_enabled = false
   scale_settings {
     min_node_count                       = 0
     max_node_count                       = 1
@@ -41,9 +40,8 @@ resource "azurerm_machine_learning_compute_cluster" "machine_learning_compute_cl
     ]
   }
 
-  description            = ""
-  local_auth_enabled     = false
-  # node_public_ip_enabled = false
+  description        = ""
+  local_auth_enabled = false
   scale_settings {
     min_node_count                       = each.value.scale.min_node_count
     max_node_count                       = each.value.scale.max_node_count
@@ -76,11 +74,10 @@ resource "azurerm_machine_learning_compute_instance" "machine_learning_compute_i
     tenant_id = data.azurerm_client_config.current.tenant_id
     object_id = each.value.user_object_id
   }
-  authorization_type     = "personal"
-  description            = ""
-  local_auth_enabled     = false
-  # node_public_ip_enabled = false
-  virtual_machine_size   = each.value.vm_size
+  authorization_type   = "personal"
+  description          = ""
+  local_auth_enabled   = false
+  virtual_machine_size = each.value.vm_size
 
   depends_on = [
     azapi_update_resource.machine_learning_managed_network
