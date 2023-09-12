@@ -52,6 +52,42 @@ variable "subnet_id" {
   }
 }
 
+variable "machine_learning_compute_clusters" {
+  type = map(object({
+    vm_priority = optional(string, "Dedicated")
+    vm_size     = optional(string, "Standard_DS2_v2")
+    scale = object({
+      min_node_count = optional(any, 0)
+      max_node_count = optional(any, 3)
+    })
+  }))
+  sensitive   = false
+  default     = {}
+  description = "Specifies the compute cluster to be created for the Machine Learning Workspace."
+  validation {
+    condition = alltrue([
+      length([for vm_priority in values(var.machine_learning_compute_clusters)[*].vm_priority : vm_priority if !contains(["Dedicated", "Dedicated"], sku_name)]) <= 0
+    ])
+    error_message = "Please specify a compute cluster configuration."
+  }
+}
+
+variable "machine_learning_compute_instances" {
+  type = map(object({
+    user_object_id = string
+    vm_size        = optional(string, "Standard_DS2_v2")
+  }))
+  sensitive   = false
+  default     = {}
+  description = "Specifies the compute instances to be created for the Machine Learning Workspace."
+  validation {
+    condition = alltrue([
+      length([for vm_priority in values(var.machine_learning_compute_clusters)[*].vm_priority : vm_priority if !contains(["Dedicated", "Dedicated"], sku_name)]) <= 0
+    ])
+    error_message = "Please specify a compute instance configuration."
+  }
+}
+
 variable "private_dns_zone_id_container_registry" {
   description = "Specifies the resource ID of the private DNS zone for the container registry. Not required if DNS A-records get created via Azure Policy."
   type        = string
