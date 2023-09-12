@@ -39,7 +39,7 @@ on:
 jobs:
   lint:
     name: Terraform Lint
-    runs-on: [self-hosted]
+    runs-on: [ubuntu-latest]
     continue-on-error: false
     needs: []
 
