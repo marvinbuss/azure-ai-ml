@@ -22,6 +22,70 @@ resource "azurerm_machine_learning_workspace" "machine_learning_workspace" {
   public_network_access_enabled  = false
   sku_name                       = "Basic"
   v1_legacy_mode_enabled         = false
+
+  depends_on = [
+    azurerm_role_assignment.uai_role_assignment_resource_group_reader,
+    azurerm_role_assignment.uai_role_assignment_container_registry_contributor,
+    azurerm_role_assignment.uai_role_assignment_storage_contributor,
+    azurerm_role_assignment.uai_role_assignment_storage_blob_contributor,
+    azurerm_role_assignment.uai_role_assignment_key_vault_contributor,
+    azurerm_role_assignment.uai_role_assignment_key_vault_administrator,
+    azurerm_role_assignment.uai_role_assignment_application_insights_contributor,
+    azurerm_role_assignment.uai_role_assignment_machine_learning_workspace_contributor
+  ]
+}
+
+resource "azapi_update_resource" "machine_learning_managed_network" {
+  type        = "Microsoft.MachineLearningServices/workspaces@2023-06-01-preview"
+  resource_id = azurerm_machine_learning_workspace.machine_learning_workspace.id
+
+  body = jsonencode({
+    properties = {
+      managedNetwork = {
+        isolationMode = "AllowOnlyApprovedOutbound"
+        status = {
+          status     = "Active"
+          sparkReady = true
+        }
+        outboundRules = {
+          "${azurerm_storage_account.storage.name}-file" = {
+            type     = "PrivateEndpoint"
+            category = "UserDefined"
+            status   = "Active"
+            destination = {
+              serviceResourceId = azurerm_storage_account.storage.id
+              subresourceTarget = "file"
+              sparkEnabled      = true
+              sparkStatus       = "Active"
+            }
+          },
+          "${azurerm_storage_account.storage.name}-table" = {
+            type     = "PrivateEndpoint"
+            category = "UserDefined"
+            status   = "Active"
+            destination = {
+              serviceResourceId = azurerm_storage_account.storage.id
+              subresourceTarget = "table"
+              sparkEnabled      = true
+              sparkStatus       = "Active"
+            }
+          },
+          "${azurerm_storage_account.storage.name}-queue" = {
+            type     = "PrivateEndpoint"
+            category = "UserDefined"
+            status   = "Active"
+            destination = {
+              serviceResourceId = azurerm_storage_account.storage.id
+              subresourceTarget = "queue"
+              sparkEnabled      = true
+              sparkStatus       = "Active"
+            }
+          }
+        }
+      }
+      systemDatastoresAuthMode = "identity"
+    }
+  })
 }
 
 data "azurerm_monitor_diagnostic_categories" "diagnostic_categories_machine_learning_workspace" {
