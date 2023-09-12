@@ -12,15 +12,19 @@ on:
         required: true
         type: string
         description: "Specifies the working directory."
+      subscription_id:
+        required: true
+        type: string
+        description: "Specifies the Azure subscription id."
+      terraform_version:
+        required: true
+        type: string
+        description: "Specifies the terraform version."
       export_terraform_outputs:
         required: false
         type: boolean
         default: false
         description: "Specifies whether terraform outputs should be exported."
-      subscription_id:
-        required: true
-        type: string
-        description: "Specifies the Azure subscription id."
     secrets:
       TENANT_ID:
         required: true
@@ -44,6 +48,14 @@ jobs:
     needs: []
 
     steps:
+      # Setup Terraform
+      - name: Setup Terraform
+        id: terraform_setup
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: ${{ inputs.terraform_version }}
+          terraform_wrapper: true
+
       # Check Out Repository
       - name: Check Out Repository
         id: checkout_repository
@@ -71,6 +83,21 @@ jobs:
       ARM_USE_OIDC: false
 
     steps:
+      # Setup Node
+      - name: Setup Node
+        id: node_setup
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      # Setup Terraform
+      - name: Setup Terraform
+        id: terraform_setup
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: ${{ inputs.terraform_version }}
+          terraform_wrapper: true
+
       # Check Out Repository
       - name: Check Out Repository
         id: checkout_repository
@@ -115,6 +142,21 @@ jobs:
       ARM_USE_OIDC: false
 
     steps:
+      # Setup Node
+      - name: Setup Node
+        id: node_setup
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      # Setup Terraform
+      - name: Setup Terraform
+        id: terraform_setup
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: ${{ inputs.terraform_version }}
+          terraform_wrapper: true
+
       # Check Out Repository
       - name: Check Out Repository
         id: checkout_repository
