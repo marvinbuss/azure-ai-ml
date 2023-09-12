@@ -15,6 +15,5 @@ resource "azurerm_machine_learning_datastore_fileshare" "machine_learning_datast
 
   account_key           = azurerm_storage_account.storage.primary_access_key
   description           = "Primary File Storage"
-  service_data_identity = "WorkspaceUserAssignedIdentity"
   storage_fileshare_id  = azurerm_storage_share.storage_share_machine_learning_workspace.resource_manager_id
 }
