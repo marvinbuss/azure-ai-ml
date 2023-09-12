@@ -24,10 +24,10 @@ resource "azurerm_storage_account" "storage" {
       max_age_in_seconds = 1800
     }
     cors_rule {
-      allowed_headers = ["*"]
-      allowed_methods = ["GET", "HEAD"]
-      allowed_origins = ["https://mlworkspace.azure.ai", "https://ml.azure.com", "https://*.ml.azure.com"]
-      exposed_headers = ["*"]
+      allowed_headers    = ["*"]
+      allowed_methods    = ["GET", "HEAD"]
+      allowed_origins    = ["https://mlworkspace.azure.ai", "https://ml.azure.com", "https://*.ml.azure.com"]
+      exposed_headers    = ["*"]
       max_age_in_seconds = 1800
     }
     delete_retention_policy {
