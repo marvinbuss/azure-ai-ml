@@ -4,23 +4,15 @@ on:
     branches:
       - main
     paths:
-      - "**.tf"
-      - "**.yml"
-      - "**.yaml"
-      - "!.github/workflows/**"
-      - "!.pre-commit-config.yaml"
-      - "!.terraform-docs.yml"
+      - "code/terraform/**"
+      - ".github/workflows/deployment"
 
   pull_request:
     branches:
       - main
     paths:
-      - "**.tf"
-      - "**.yml"
-      - "**.yaml"
-      - "!.github/workflows/**"
-      - "!.pre-commit-config.yaml"
-      - "!.terraform-docs.yml"
+      - "code/terraform/**"
+      - ".github/workflows/deployment"
 
 jobs:
   terraform:
