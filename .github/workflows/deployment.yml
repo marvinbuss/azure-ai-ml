@@ -20,7 +20,7 @@ jobs:
     name: "Terraform Deployment"
     with:
       environment: "dev"
-      working_directory: "./tests/e2e"
+      working_directory: "./code/terraform"
       subscription_id: "8f171ff9-2b5b-4f0f-aed5-7fa360a1d094"
       export_terraform_outputs: false
     secrets:
