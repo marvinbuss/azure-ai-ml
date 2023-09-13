@@ -8,6 +8,28 @@ locals {
   }
 
   default_machine_learning_workspace_outbound_rules = {
+    "${azurerm_storage_account.storage.name}-table" = {
+      type     = "PrivateEndpoint"
+      category = "UserDefined"
+      status   = "Active"
+      destination = {
+        serviceResourceId = azurerm_storage_account.storage.id
+        subresourceTarget = "table"
+        sparkEnabled      = true
+        sparkStatus       = "Active"
+      }
+    },
+    "${azurerm_storage_account.storage.name}-queue" = {
+      type     = "PrivateEndpoint"
+      category = "UserDefined"
+      status   = "Active"
+      destination = {
+        serviceResourceId = azurerm_storage_account.storage.id
+        subresourceTarget = "queue"
+        sparkEnabled      = true
+        sparkStatus       = "Active"
+      }
+    },
     "anaconda001" = {
       type        = "FQDN"
       category    = "UserDefined"
@@ -97,28 +119,6 @@ locals {
       category    = "UserDefined"
       destination = "openaipublic.blob.core.windows.net"
       status      = "Active"
-    },
-    "${azurerm_storage_account.storage.name}-table" = {
-      type     = "PrivateEndpoint"
-      category = "UserDefined"
-      status   = "Active"
-      destination = {
-        serviceResourceId = azurerm_storage_account.storage.id
-        subresourceTarget = "table"
-        sparkEnabled      = true
-        sparkStatus       = "Active"
-      }
-    },
-    "${azurerm_storage_account.storage.name}-queue" = {
-      type     = "PrivateEndpoint"
-      category = "UserDefined"
-      status   = "Active"
-      destination = {
-        serviceResourceId = azurerm_storage_account.storage.id
-        subresourceTarget = "queue"
-        sparkEnabled      = true
-        sparkStatus       = "Active"
-      }
     }
   }
   search_service_machine_learning_workspace_outbound_rules = {
@@ -134,5 +134,5 @@ locals {
       }
     }
   }
-  machine_learning_workspace_outbound_rules = var.search_service_enabled ? concat(local.default_machine_learning_workspace_outbound_rules, local.search_service_machine_learning_workspace_outbound_rules) : local.default_machine_learning_workspace_outbound_rules
+  machine_learning_workspace_outbound_rules = var.search_service_enabled ? merge(local.default_machine_learning_workspace_outbound_rules, local.search_service_machine_learning_workspace_outbound_rules) : local.default_machine_learning_workspace_outbound_rules
 }
