@@ -28,7 +28,7 @@ resource "azurerm_role_assignment" "uai_role_assignment_storage_blob_contributor
   principal_id         = azurerm_user_assigned_identity.user_assigned_identity.principal_id
 }
 
-resource "azurerm_role_assignment" "uai_role_assignment_storage_blob_contributor" {
+resource "azurerm_role_assignment" "uai_role_assignment_storage_table_contributor" {
   scope                = azurerm_storage_account.storage.id
   role_definition_name = "Storage Table Data Contributor"
   principal_id         = azurerm_user_assigned_identity.user_assigned_identity.principal_id
