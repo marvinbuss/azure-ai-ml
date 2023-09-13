@@ -12,6 +12,9 @@ resource "azapi_resource" "machine_learning_workspace_connection_search" {
       credentials = {
         key = azurerm_search_service.search_service[0].primary_key
       }
+      metadata = {
+        ApiVersion = "2023-07-01-Preview"
+      }
       target = "https://${azurerm_search_service.search_service[0].name}.cognitiveservices.azure.com/"
     }
   })
