@@ -46,7 +46,7 @@ resource "azapi_update_resource" "machine_learning_managed_network" {
           status     = "Active"
           sparkReady = true
         }
-        outboundRules = local.machine_learning_workspace_outbound_rules
+        outboundRules = var.search_service_enabled ? merge(local.default_machine_learning_workspace_outbound_rules, local.search_service_machine_learning_workspace_outbound_rules) : local.default_machine_learning_workspace_outbound_rules
       }
       systemDatastoresAuthMode = "identity"
     }
