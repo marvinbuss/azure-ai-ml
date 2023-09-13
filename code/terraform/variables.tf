@@ -52,6 +52,13 @@ variable "subnet_id" {
   }
 }
 
+variable "search_service_enabled" {
+  description = "Specifies whether Azure Cognitive Search should be deployed."
+  type        = bool
+  sensitive   = false
+  default     = false
+}
+
 variable "machine_learning_compute_clusters" {
   type = map(object({
     vm_priority = optional(string, "Dedicated")
@@ -173,6 +180,17 @@ variable "private_dns_zone_id_queue" {
   default     = ""
   validation {
     condition     = var.private_dns_zone_id_queue == "" || (length(split("/", var.private_dns_zone_id_queue)) == 9 && endswith(var.private_dns_zone_id_queue, "privatelink.queue.core.windows.net"))
+    error_message = "Please specify a valid resource ID for the private DNS Zone."
+  }
+}
+
+variable "private_dns_zone_id_search_service" {
+  description = "Specifies the resource ID of the private DNS zone for Azure Cognitive Search endpoints. Not required if DNS A-records get created via Azure Policy."
+  type        = string
+  sensitive   = false
+  default     = ""
+  validation {
+    condition     = var.private_dns_zone_id_search_service == "" || (length(split("/", var.private_dns_zone_id_search_service)) == 9 && endswith(var.private_dns_zone_id_search_service, "privatelink.search.windows.net"))
     error_message = "Please specify a valid resource ID for the private DNS Zone."
   }
 }
