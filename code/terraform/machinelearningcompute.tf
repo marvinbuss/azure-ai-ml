@@ -19,7 +19,7 @@ resource "azurerm_machine_learning_compute_cluster" "machine_learning_compute_cl
   }
   ssh_public_access_enabled = false
   vm_priority               = "Dedicated"
-  vm_size                   = "Standard_DS2_v2"
+  vm_size                   = upper("Standard_DS2_v2")
 
   depends_on = [
     azapi_update_resource.machine_learning_managed_network
