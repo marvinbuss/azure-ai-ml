@@ -4,23 +4,15 @@ on:
     branches:
       - main
     paths:
-      - "**.tf"
-      - "**.yml"
-      - "**.yaml"
-      - "!.github/workflows/**"
-      - "!.pre-commit-config.yaml"
-      - "!.terraform-docs.yml"
+      - "code/terraform/**"
+      - ".github/workflows/deployment"
 
   pull_request:
     branches:
       - main
     paths:
-      - "**.tf"
-      - "**.yml"
-      - "**.yaml"
-      - "!.github/workflows/**"
-      - "!.pre-commit-config.yaml"
-      - "!.terraform-docs.yml"
+      - "code/terraform/**"
+      - ".github/workflows/deployment"
 
 jobs:
   terraform:
@@ -28,8 +20,10 @@ jobs:
     name: "Terraform Deployment"
     with:
       environment: "dev"
-      working_directory: "./tests/e2e"
+      working_directory: "./code/terraform"
       subscription_id: "8f171ff9-2b5b-4f0f-aed5-7fa360a1d094"
+      terraform_version: "1.5.6"
+      export_terraform_outputs: false
     secrets:
       TENANT_ID: ${{ secrets.TENANT_ID }}
       CLIENT_ID: ${{ secrets.CLIENT_ID }}
