@@ -23,14 +23,14 @@ resource "azurerm_search_service" "search_service" {
 data "azurerm_monitor_diagnostic_categories" "diagnostic_categories_search_service" {
   count = var.search_service_enabled ? 1 : 0
 
-  resource_id = azurerm_search_service.search_service.id
+  resource_id = azurerm_search_service.search_service[0].id
 }
 
 resource "azurerm_monitor_diagnostic_setting" "diagnostic_setting_search_service" {
   count = var.search_service_enabled ? 1 : 0
 
   name                       = "logAnalytics"
-  target_resource_id         = azurerm_search_service.search_service.id
+  target_resource_id         = azurerm_search_service.search_service[0].id
   log_analytics_workspace_id = azurerm_log_analytics_workspace.log_analytics_workspace.id
 
   dynamic "enabled_log" {
@@ -54,23 +54,23 @@ resource "azurerm_monitor_diagnostic_setting" "diagnostic_setting_search_service
 resource "azurerm_private_endpoint" "search_service_private_endpoint" {
   count = var.search_service_enabled ? 1 : 0
 
-  name                = "${azurerm_search_service.search_service.name}-pe"
+  name                = "${azurerm_search_service.search_service[0].name}-pe"
   location            = var.location
-  resource_group_name = azurerm_search_service.search_service.resource_group_name
+  resource_group_name = azurerm_search_service.search_service[0].resource_group_name
   tags                = var.tags
 
-  custom_network_interface_name = "${azurerm_search_service.search_service.name}-nic"
+  custom_network_interface_name = "${azurerm_search_service.search_service[0].name}-nic"
   private_service_connection {
-    name                           = "${azurerm_search_service.search_service.name}-pe"
+    name                           = "${azurerm_search_service.search_service[0].name}-pe"
     is_manual_connection           = false
-    private_connection_resource_id = azurerm_search_service.search_service.id
+    private_connection_resource_id = azurerm_search_service.search_service[0].id
     subresource_names              = ["searchService"]
   }
   subnet_id = data.azurerm_subnet.subnet.id
   dynamic "private_dns_zone_group" {
     for_each = var.private_dns_zone_id_search_service == "" ? [] : [1]
     content {
-      name = "${azurerm_search_service.search_service.name}-arecord"
+      name = "${azurerm_search_service.search_service[0].name}-arecord"
       private_dns_zone_ids = [
         var.private_dns_zone_id_search_service
       ]
