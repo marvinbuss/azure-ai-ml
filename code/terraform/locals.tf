@@ -134,5 +134,5 @@ locals {
       }
     }
   }
-  machine_learning_workspace_outbound_rules = merge(local.default_machine_learning_workspace_outbound_rules, var.search_service_enabled ? local.search_service_machine_learning_workspace_outbound_rules: {})
+  machine_learning_workspace_outbound_rules = merge(local.default_machine_learning_workspace_outbound_rules, var.search_service_enabled ? local.search_service_machine_learning_workspace_outbound_rules : {})
 }
