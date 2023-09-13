@@ -12,7 +12,7 @@ resource "azapi_resource" "machine_learning_workspace_connection_search" {
       credentials = {
         key = azurerm_search_service.search_service[0].primary_key
       }
-      target   = "https://${azurerm_search_service.search_service[0].name}.cognitiveservices.azure.com/"
+      target = "https://${azurerm_search_service.search_service[0].name}.cognitiveservices.azure.com/"
     }
   })
 }
