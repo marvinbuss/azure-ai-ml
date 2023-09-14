@@ -122,12 +122,12 @@ locals {
     }
   }
   search_service_machine_learning_workspace_outbound_rules = {
-    "${azurerm_search_service.search_service[0].name}-searchService" = {
+    "${var.search_service_enabled ? azurerm_search_service.search_service[0].name : ""}-searchService" = {
       type     = "PrivateEndpoint"
       category = "UserDefined"
       status   = "Active"
       destination = {
-        serviceResourceId = azurerm_search_service.search_service[0].id
+        serviceResourceId = var.search_service_enabled ? azurerm_search_service.search_service[0].id : ""
         subresourceTarget = "searchService"
         sparkEnabled      = true
         sparkStatus       = "Active"
