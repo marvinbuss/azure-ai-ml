@@ -116,32 +116,6 @@ resource "azurerm_storage_management_policy" "storage_management_policy" {
   }
 }
 
-resource "azurerm_storage_container" "storage_container_machine_learning_workspace" {
-  name                 = "azureml"
-  storage_account_name = azurerm_storage_account.storage.name
-
-  container_access_type = "private"
-
-  depends_on = [
-    azurerm_role_assignment.current_roleassignment_storage,
-    azurerm_private_endpoint.storage_private_endpoint_blob,
-  ]
-}
-
-resource "azurerm_storage_share" "storage_share_machine_learning_workspace" {
-  name                 = "code"
-  storage_account_name = azurerm_storage_account.storage.name
-
-  access_tier      = "TransactionOptimized"
-  enabled_protocol = "SMB"
-  quota            = 5120
-
-  depends_on = [
-    azurerm_role_assignment.current_roleassignment_storage,
-    azurerm_private_endpoint.storage_private_endpoint_file,
-  ]
-}
-
 resource "azurerm_private_endpoint" "storage_private_endpoint_blob" {
   name                = "${azurerm_storage_account.storage.name}-blob-pe"
   location            = var.location

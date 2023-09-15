@@ -46,30 +46,7 @@ resource "azapi_update_resource" "machine_learning_managed_network" {
           status     = "Active"
           sparkReady = true
         }
-        outboundRules = {
-          "${azurerm_storage_account.storage.name}-table" = {
-            type     = "PrivateEndpoint"
-            category = "UserDefined"
-            status   = "Active"
-            destination = {
-              serviceResourceId = azurerm_storage_account.storage.id
-              subresourceTarget = "table"
-              sparkEnabled      = true
-              sparkStatus       = "Active"
-            }
-          },
-          "${azurerm_storage_account.storage.name}-queue" = {
-            type     = "PrivateEndpoint"
-            category = "UserDefined"
-            status   = "Active"
-            destination = {
-              serviceResourceId = azurerm_storage_account.storage.id
-              subresourceTarget = "queue"
-              sparkEnabled      = true
-              sparkStatus       = "Active"
-            }
-          }
-        }
+        outboundRules = local.machine_learning_workspace_outbound_rules
       }
       systemDatastoresAuthMode = "identity"
     }
