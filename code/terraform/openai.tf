@@ -84,7 +84,7 @@ resource "azurerm_monitor_diagnostic_setting" "diagnostic_setting_cognitive_serv
 
   name                       = "logAnalytics"
   target_resource_id         = azurerm_cognitive_account.cognitive_account[0].id
-  log_analytics_workspace_id = var.log_analytics_workspace_id
+  log_analytics_workspace_id = azurerm_log_analytics_workspace.log_analytics_workspace.id
 
   dynamic "enabled_log" {
     iterator = entry
