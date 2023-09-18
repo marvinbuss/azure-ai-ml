@@ -18,7 +18,7 @@ resource "azurerm_cognitive_account" "cognitive_account" {
   local_auth_enabled = true
   network_acls {
     default_action = "Deny"
-    ip_rules       = var.ip_rules_cognitive_service
+    ip_rules       = []
   }
   outbound_network_access_restricted = true
   public_network_access_enabled      = false
