@@ -30,7 +30,7 @@ resource "azapi_resource" "cognitive_service_open_ai_model_ada" {
 
   type      = "Microsoft.CognitiveServices/accounts/deployments@2023-05-01"
   name      = "text-embedding-ada-002"
-  parent_id = azurerm_cognitive_account.cognitive_service[0].id
+  parent_id = azurerm_cognitive_account.cognitive_account[0].id
 
   body = jsonencode({
     properties = {
@@ -54,7 +54,7 @@ resource "azapi_resource" "cognitive_service_open_ai_model_gtt_35" {
 
   type      = "Microsoft.CognitiveServices/accounts/deployments@2023-05-01"
   name      = "gpt-35-turbo"
-  parent_id = azurerm_cognitive_account.cognitive_service[0].id
+  parent_id = azurerm_cognitive_account.cognitive_account[0].id
 
   body = jsonencode({
     properties = {
@@ -76,14 +76,14 @@ resource "azapi_resource" "cognitive_service_open_ai_model_gtt_35" {
 data "azurerm_monitor_diagnostic_categories" "diagnostic_categories_cognitive_service" {
   count = var.open_ai_enabled ? 1 : 0
 
-  resource_id = azurerm_cognitive_account.cognitive_service[0].id
+  resource_id = azurerm_cognitive_account.cognitive_account[0].id
 }
 
 resource "azurerm_monitor_diagnostic_setting" "diagnostic_setting_cognitive_service" {
   count = var.open_ai_enabled ? 1 : 0
 
   name                       = "logAnalytics"
-  target_resource_id         = azurerm_cognitive_account.cognitive_service[0].id
+  target_resource_id         = azurerm_cognitive_account.cognitive_account[0].id
   log_analytics_workspace_id = var.log_analytics_workspace_id
 
   dynamic "enabled_log" {
@@ -115,23 +115,23 @@ resource "azurerm_monitor_diagnostic_setting" "diagnostic_setting_cognitive_serv
 resource "azurerm_private_endpoint" "cognitive_service_private_endpoint" {
   count = var.open_ai_enabled ? 1 : 0
 
-  name                = "${azurerm_cognitive_account.cognitive_service[0].name}-pe"
+  name                = "${azurerm_cognitive_account.cognitive_account[0].name}-pe"
   location            = var.location
-  resource_group_name = azurerm_cognitive_account.cognitive_service[0].resource_group_name
+  resource_group_name = azurerm_cognitive_account.cognitive_account[0].resource_group_name
   tags                = var.tags
 
-  custom_network_interface_name = "${azurerm_cognitive_account.cognitive_service[0].name}-nic"
+  custom_network_interface_name = "${azurerm_cognitive_account.cognitive_account[0].name}-nic"
   private_service_connection {
-    name                           = "${azurerm_cognitive_account.cognitive_service[0].name}-pe"
+    name                           = "${azurerm_cognitive_account.cognitive_account[0].name}-pe"
     is_manual_connection           = false
-    private_connection_resource_id = azurerm_cognitive_account.cognitive_service[0].id
+    private_connection_resource_id = azurerm_cognitive_account.cognitive_account[0].id
     subresource_names              = ["account"]
   }
   subnet_id = var.subnet_id
   dynamic "private_dns_zone_group" {
     for_each = var.private_dns_zone_id_open_ai == "" ? [] : [1]
     content {
-      name = "${azurerm_cognitive_account.cognitive_service[0].name}-arecord"
+      name = "${azurerm_cognitive_account.cognitive_account[0].name}-arecord"
       private_dns_zone_ids = [
         var.private_dns_zone_id_open_ai
       ]
