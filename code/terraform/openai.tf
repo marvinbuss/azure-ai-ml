@@ -34,7 +34,7 @@ resource "azapi_resource" "cognitive_service_open_ai_model_ada" {
 
   body = jsonencode({
     sku = {
-      name = "Standard"
+      name     = "Standard"
       capacity = 60
     }
     properties = {
@@ -43,7 +43,7 @@ resource "azapi_resource" "cognitive_service_open_ai_model_ada" {
         name    = "text-embedding-ada-002"
         version = "2"
       }
-      raiPolicyName = "Microsoft.Default"
+      raiPolicyName        = "Microsoft.Default"
       versionUpgradeOption = "OnceNewDefaultVersionAvailable"
     }
   })
@@ -58,7 +58,7 @@ resource "azapi_resource" "cognitive_service_open_ai_model_gtt_35" {
 
   body = jsonencode({
     sku = {
-      name = "Standard"
+      name     = "Standard"
       capacity = 60
     }
     properties = {
@@ -67,11 +67,11 @@ resource "azapi_resource" "cognitive_service_open_ai_model_gtt_35" {
         name    = "gpt-35-turbo"
         version = "0301"
       }
-      raiPolicyName = "Microsoft.Default"
+      raiPolicyName        = "Microsoft.Default"
       versionUpgradeOption = "OnceNewDefaultVersionAvailable"
     }
   })
-  
+
   depends_on = [
     azapi_resource.cognitive_service_open_ai_model_ada
   ]
