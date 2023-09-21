@@ -36,6 +36,7 @@ resource "azapi_resource" "machine_learning_workspace_connection_open_ai" {
       }
       metadata = {
         ApiVersion = "2023-07-01-preview"
+        ApiType = "azure"
       }
       target = "https://${azurerm_cognitive_account.cognitive_account[0].name}.openai.azure.com/"
     }

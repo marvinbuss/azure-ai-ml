@@ -33,6 +33,10 @@ resource "azapi_resource" "cognitive_service_open_ai_model_ada" {
   parent_id = azurerm_cognitive_account.cognitive_account[0].id
 
   body = jsonencode({
+    sku = {
+      name = "Standard"
+      capacity = 60
+    }
     properties = {
       model = {
         format  = "OpenAI"
@@ -40,10 +44,6 @@ resource "azapi_resource" "cognitive_service_open_ai_model_ada" {
         version = "2"
       }
       raiPolicyName = "Microsoft.Default"
-      scaleSettings = {
-        scaleType = "Standard"
-        capacity  = 60
-      }
       versionUpgradeOption = "OnceNewDefaultVersionAvailable"
     }
   })
@@ -57,6 +57,10 @@ resource "azapi_resource" "cognitive_service_open_ai_model_gtt_35" {
   parent_id = azurerm_cognitive_account.cognitive_account[0].id
 
   body = jsonencode({
+    sku = {
+      name = "Standard"
+      capacity = 60
+    }
     properties = {
       model = {
         format  = "OpenAI"
@@ -64,13 +68,13 @@ resource "azapi_resource" "cognitive_service_open_ai_model_gtt_35" {
         version = "0301"
       }
       raiPolicyName = "Microsoft.Default"
-      scaleSettings = {
-        scaleType = "Standard"
-        capacity  = 60
-      }
       versionUpgradeOption = "OnceNewDefaultVersionAvailable"
     }
   })
+  
+  depends_on = [
+    azapi_resource.cognitive_service_open_ai_model_ada
+  ]
 }
 
 data "azurerm_monitor_diagnostic_categories" "diagnostic_categories_cognitive_service" {
@@ -91,10 +95,6 @@ resource "azurerm_monitor_diagnostic_setting" "diagnostic_setting_cognitive_serv
     for_each = data.azurerm_monitor_diagnostic_categories.diagnostic_categories_cognitive_service[0].log_category_groups
     content {
       category_group = entry.value
-      retention_policy {
-        enabled = true
-        days    = 30
-      }
     }
   }
 
@@ -104,10 +104,6 @@ resource "azurerm_monitor_diagnostic_setting" "diagnostic_setting_cognitive_serv
     content {
       category = entry.value
       enabled  = true
-      retention_policy {
-        enabled = true
-        days    = 30
-      }
     }
   }
 }
