@@ -4,6 +4,7 @@ prefix                 = "dpml"
 tags                   = {}
 resource_group_name    = "myprod-dev-analytics-rg"
 subnet_id              = "/subscriptions/8f171ff9-2b5b-4f0f-aed5-7fa360a1d094/resourceGroups/mycrp-prd-logic-network-rg/providers/Microsoft.Network/virtualNetworks/mycrp-prd-logic-vnet001/subnets/PeSubnet"
+open_ai_enabled        = false
 search_service_enabled = false
 machine_learning_compute_clusters = {
   # "cpu001" = {

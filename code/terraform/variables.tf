@@ -59,6 +59,13 @@ variable "search_service_enabled" {
   default     = false
 }
 
+variable "open_ai_enabled" {
+  description = "Specifies whether Azure Open AI should be deployed."
+  type        = bool
+  sensitive   = false
+  default     = false
+}
+
 variable "machine_learning_compute_clusters" {
   type = map(object({
     vm_priority = optional(string, "Dedicated")
@@ -191,6 +198,17 @@ variable "private_dns_zone_id_search_service" {
   default     = ""
   validation {
     condition     = var.private_dns_zone_id_search_service == "" || (length(split("/", var.private_dns_zone_id_search_service)) == 9 && endswith(var.private_dns_zone_id_search_service, "privatelink.search.windows.net"))
+    error_message = "Please specify a valid resource ID for the private DNS Zone."
+  }
+}
+
+variable "private_dns_zone_id_open_ai" {
+  description = "Specifies the resource ID of the private DNS zone for Azure Open AI endpoints. Not required if DNS A-records get created via Azure Policy."
+  type        = string
+  sensitive   = false
+  default     = ""
+  validation {
+    condition     = var.private_dns_zone_id_open_ai == "" || (length(split("/", var.private_dns_zone_id_open_ai)) == 9 && endswith(var.private_dns_zone_id_open_ai, "privatelink.openai.azure.com"))
     error_message = "Please specify a valid resource ID for the private DNS Zone."
   }
 }
