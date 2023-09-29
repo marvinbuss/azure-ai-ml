@@ -83,7 +83,7 @@ locals {
     "vscode006" = {
       type        = "FQDN"
       category    = "UserDefined"
-      destination = "raw.githubusercontent.com/microsoft/vscode-tools-for-ai/master/azureml_remote_websocket_server/*"
+      destination = "raw.githubusercontent.com" // "/microsoft/vscode-tools-for-ai/master/azureml_remote_websocket_server/*"
       status      = "Active"
     },
     "maven001" = {
