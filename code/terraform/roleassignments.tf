@@ -34,6 +34,12 @@ resource "azurerm_role_assignment" "uai_role_assignment_storage_table_contributo
   principal_id         = azurerm_user_assigned_identity.user_assigned_identity.principal_id
 }
 
+resource "azurerm_role_assignment" "uai_role_assignment_storage_file_data_priviliged_contributor" {
+  scope                = azurerm_storage_account.storage.id
+  role_definition_name = "Storage File Data Privileged Contributor"
+  principal_id         = azurerm_user_assigned_identity.user_assigned_identity.principal_id
+}
+
 resource "azurerm_role_assignment" "uai_role_assignment_key_vault_contributor" {
   scope                = azurerm_key_vault.key_vault.id
   role_definition_name = "Contributor"
