@@ -41,6 +41,12 @@ locals {
     "pytorch001" = {
       type        = "FQDN"
       category    = "UserDefined"
+      destination = "pytorch.org"
+      status      = "Active"
+    },
+    "pytorch002" = {
+      type        = "FQDN"
+      category    = "UserDefined"
       destination = "*.pytorch.org"
       status      = "Active"
     },
@@ -84,6 +90,30 @@ locals {
       type        = "FQDN"
       category    = "UserDefined"
       destination = "raw.githubusercontent.com" // "/microsoft/vscode-tools-for-ai/master/azureml_remote_websocket_server/*"
+      status      = "Active"
+    },
+    "vscode007" = {
+      type        = "FQDN"
+      category    = "UserDefined"
+      destination = "*.vscode.dev"
+      status      = "Active"
+    },
+    "vscode008" = {
+      type        = "FQDN"
+      category    = "UserDefined"
+      destination = "*.vscode-cdn.net"
+      status      = "Active"
+    },
+    "vscode009" = {
+      type        = "FQDN"
+      category    = "UserDefined"
+      destination = "*.vscodeexperiments.azureedge.net"
+      status      = "Active"
+    },
+    "vscode010" = {
+      type        = "FQDN"
+      category    = "UserDefined"
+      destination = "default.exp-tas.com"
       status      = "Active"
     },
     "maven001" = {
