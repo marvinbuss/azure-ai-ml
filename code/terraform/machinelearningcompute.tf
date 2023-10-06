@@ -1,6 +1,6 @@
 resource "azurerm_machine_learning_compute_cluster" "machine_learning_compute_cluster_image_build" {
-  machine_learning_workspace_id = azurerm_machine_learning_workspace.machine_learning_workspace.id
-  name                          = "builder001"
+  machine_learning_workspace_id = azapi_resource.machine_learning_workspace.id
+  name                          = local.default_machine_learning_workspace_image_builder_compute_name
   location                      = var.location
   tags                          = var.tags
   identity {
@@ -34,7 +34,7 @@ resource "azurerm_machine_learning_compute_cluster" "machine_learning_compute_cl
 resource "azurerm_machine_learning_compute_cluster" "machine_learning_compute_cluster" {
   for_each = var.machine_learning_compute_clusters
 
-  machine_learning_workspace_id = azurerm_machine_learning_workspace.machine_learning_workspace.id
+  machine_learning_workspace_id = azapi_resource.machine_learning_workspace.id
   name                          = each.key
   location                      = var.location
   tags                          = var.tags
@@ -69,7 +69,7 @@ resource "azurerm_machine_learning_compute_cluster" "machine_learning_compute_cl
 resource "azurerm_machine_learning_compute_instance" "machine_learning_compute_instance" {
   for_each = var.machine_learning_compute_instances
 
-  machine_learning_workspace_id = azurerm_machine_learning_workspace.machine_learning_workspace.id
+  machine_learning_workspace_id = azapi_resource.machine_learning_workspace.id
   name                          = each.key
   location                      = var.location
   tags                          = var.tags

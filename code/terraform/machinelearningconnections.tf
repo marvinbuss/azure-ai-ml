@@ -3,7 +3,7 @@ resource "azapi_resource" "machine_learning_workspace_connection_search" {
 
   type      = "Microsoft.MachineLearningServices/workspaces/connections@2023-06-01-preview"
   name      = azurerm_search_service.search_service[0].name
-  parent_id = azurerm_machine_learning_workspace.machine_learning_workspace.id
+  parent_id = azapi_resource.machine_learning_workspace.id
 
   body = jsonencode({
     properties = {
@@ -25,7 +25,7 @@ resource "azapi_resource" "machine_learning_workspace_connection_open_ai" {
 
   type      = "Microsoft.MachineLearningServices/workspaces/connections@2023-06-01-preview"
   name      = azurerm_cognitive_account.cognitive_account[0].name
-  parent_id = azurerm_machine_learning_workspace.machine_learning_workspace.id
+  parent_id = azapi_resource.machine_learning_workspace.id
 
   body = jsonencode({
     properties = {

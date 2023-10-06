@@ -7,6 +7,7 @@ locals {
     name                 = split("/", var.subnet_id)[10]
   }
 
+  default_machine_learning_workspace_image_builder_compute_name = "imagebuilder001"
   default_machine_learning_workspace_outbound_rules = {
     "anaconda001" = {
       type        = "FQDN"
