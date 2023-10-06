@@ -1,6 +1,6 @@
 resource "azurerm_machine_learning_compute_cluster" "machine_learning_compute_cluster_image_build" {
   machine_learning_workspace_id = azurerm_machine_learning_workspace.machine_learning_workspace.id
-  name                          = "builder001"
+  name                          = local.default_machine_learning_workspace_image_builder_compute_name
   location                      = var.location
   tags                          = var.tags
   identity {
