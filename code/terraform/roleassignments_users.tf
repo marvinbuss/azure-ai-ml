@@ -35,14 +35,14 @@ resource "azurerm_role_assignment" "users_role_assignment_machine_learning_works
 }
 
 resource "azurerm_role_assignment" "users_role_assignment_search_service_search_index_data_contributor" {
-  count = var.search_service_enabled ? 1 : 0
+  count                = var.search_service_enabled ? 1 : 0
   scope                = azurerm_search_service.search_service[0].id
   role_definition_name = "Search Index Data Contributor"
   principal_id         = var.users_object_id
 }
 
 resource "azurerm_role_assignment" "users_role_assignment_cognitive_account_cognitive_services_openai_contributor" {
-  count = var.open_ai_enabled ? 1 : 0
+  count                = var.open_ai_enabled ? 1 : 0
   scope                = azurerm_cognitive_account.cognitive_account[0].id
   role_definition_name = "Cognitive Services OpenAI Contributor"
   principal_id         = var.users_object_id

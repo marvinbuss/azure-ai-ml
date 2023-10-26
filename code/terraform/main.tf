@@ -1,17 +1,17 @@
 resource "azurerm_resource_group" "resource_group_logging" {
-  name = "${local.prefix}-logging"
+  name     = "${local.prefix}-logging"
   location = var.location
-  tags = var.tags
+  tags     = var.tags
 }
 
 resource "azurerm_resource_group" "resource_group_ml" {
-  name = "${local.prefix}-ml"
+  name     = "${local.prefix}-ml"
   location = var.location
-  tags = var.tags
+  tags     = var.tags
 }
 
 resource "azurerm_resource_group" "resource_group_cs" {
-  name = "${local.prefix}-ml"
+  name     = "${local.prefix}-cs"
   location = var.location
-  tags = var.tags
+  tags     = var.tags
 }

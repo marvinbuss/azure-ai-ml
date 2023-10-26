@@ -24,13 +24,19 @@ resource "azurerm_machine_learning_workspace" "machine_learning_workspace" {
   v1_legacy_mode_enabled         = false
 
   depends_on = [
-    azurerm_role_assignment.uai_role_assignment_resource_group_reader,
+    azurerm_role_assignment.uai_role_assignment_resource_group_cs_reader,
+    azurerm_role_assignment.uai_role_assignment_resource_group_logging_reader,
+    azurerm_role_assignment.uai_role_assignment_resource_group_ml_reader,
     azurerm_role_assignment.uai_role_assignment_container_registry_contributor,
     azurerm_role_assignment.uai_role_assignment_storage_contributor,
     azurerm_role_assignment.uai_role_assignment_storage_blob_contributor,
+    azurerm_role_assignment.uai_role_assignment_storage_table_contributor,
+    azurerm_role_assignment.uai_role_assignment_storage_file_data_priviliged_contributor,
     azurerm_role_assignment.uai_role_assignment_key_vault_contributor,
     azurerm_role_assignment.uai_role_assignment_key_vault_administrator,
-    azurerm_role_assignment.uai_role_assignment_application_insights_contributor
+    azurerm_role_assignment.uai_role_assignment_application_insights_contributor,
+    azurerm_role_assignment.uai_role_assignment_search_service_contributor,
+    azurerm_role_assignment.uai_role_assignment_cognitive_account_contributor,
   ]
 }
 
