@@ -81,7 +81,7 @@ variable "machine_learning_compute_clusters" {
   description = "Specifies the compute cluster to be created for the Machine Learning Workspace."
   validation {
     condition = alltrue([
-      length([for vm_priority in values(var.machine_learning_compute_clusters)[*].vm_priority : vm_priority if !contains(["Dedicated", "Dedicated"], vm_priority)]) <= 0
+      length([for vm_priority in values(var.machine_learning_compute_clusters)[*].vm_priority : vm_priority if !contains(["LowPriority", "Dedicated"], vm_priority)]) <= 0
     ])
     error_message = "Please specify a compute cluster configuration."
   }
@@ -97,7 +97,7 @@ variable "machine_learning_compute_instances" {
   description = "Specifies the compute instances to be created for the Machine Learning Workspace."
   # validation {
   #   condition = alltrue([
-  #     length([for vm_priority in values(var.machine_learning_compute_clusters)[*].vm_priority : vm_priority if !contains(["Dedicated", "Dedicated"], vm_priority)]) <= 0
+  #     length([for vm_priority in values(var.machine_learning_compute_clusters)[*].vm_priority : vm_priority if !contains(["LowPriority", "Dedicated"], vm_priority)]) <= 0
   #   ])
   #   error_message = "Please specify a compute instance configuration."
   # }
