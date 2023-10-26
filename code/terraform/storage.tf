@@ -1,7 +1,7 @@
 resource "azurerm_storage_account" "storage" {
   name                = replace("${local.prefix}-st001", "-", "")
   location            = var.location
-  resource_group_name = data.azurerm_resource_group.resource_group.name
+  resource_group_name = azurerm_resource_group.resource_group_ml.name
   tags                = var.tags
 
   access_tier                     = "Hot"
@@ -15,13 +15,6 @@ resource "azurerm_storage_account" "storage" {
     # change_feed_retention_in_days = 7
     container_delete_retention_policy {
       days = 7
-    }
-    cors_rule {
-      allowed_headers    = ["x-ms-blob-type"]
-      allowed_methods    = ["PUT"]
-      allowed_origins    = ["https://*.azuredatabricks.net"]
-      exposed_headers    = [""]
-      max_age_in_seconds = 1800
     }
     cors_rule {
       allowed_headers    = ["*"]
@@ -54,13 +47,6 @@ resource "azurerm_storage_account" "storage" {
     default_action             = "Deny"
     ip_rules                   = []
     virtual_network_subnet_ids = []
-    dynamic "private_link_access" {
-      for_each = tolist(setunion(var.data_platform_subscription_ids, [data.azurerm_client_config.current.subscription_id]))
-      content {
-        endpoint_resource_id = "/subscriptions/${private_link_access.value}/resourcegroups/*/providers/Microsoft.Databricks/accessConnectors/*"
-        endpoint_tenant_id   = data.azurerm_client_config.current.tenant_id
-      }
-    }
     dynamic "private_link_access" {
       for_each = tolist(setunion(var.data_platform_subscription_ids, [data.azurerm_client_config.current.subscription_id]))
       content {

@@ -1,7 +1,7 @@
 resource "azurerm_log_analytics_workspace" "log_analytics_workspace" {
   name                = "${local.prefix}-log001"
   location            = var.location
-  resource_group_name = data.azurerm_resource_group.resource_group.name
+  resource_group_name = azurerm_resource_group.resource_group_logging.name
   tags                = var.tags
 
   allow_resource_only_permissions = true
