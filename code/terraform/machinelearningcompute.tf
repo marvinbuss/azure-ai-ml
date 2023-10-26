@@ -29,6 +29,9 @@ resource "azurerm_machine_learning_compute_cluster" "machine_learning_compute_cl
       subnet_resource_id
     ]
   }
+  timeouts {
+    create = "40m"
+  }
 }
 
 resource "azurerm_machine_learning_compute_cluster" "machine_learning_compute_cluster" {
@@ -60,9 +63,10 @@ resource "azurerm_machine_learning_compute_cluster" "machine_learning_compute_cl
     azapi_update_resource.machine_learning_managed_network
   ]
   lifecycle {
-    ignore_changes = [
-      subnet_resource_id
-    ]
+    ignore_changes = all
+  }
+  timeouts {
+    create = "40m"
   }
 }
 
@@ -93,8 +97,9 @@ resource "azurerm_machine_learning_compute_instance" "machine_learning_compute_i
     azapi_update_resource.machine_learning_managed_network
   ]
   lifecycle {
-    ignore_changes = [
-      subnet_resource_id
-    ]
+    ignore_changes = all
+  }
+  timeouts {
+    create = "40m"
   }
 }

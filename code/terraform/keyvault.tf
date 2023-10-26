@@ -1,7 +1,7 @@
 resource "azurerm_key_vault" "key_vault" {
   name                = "${local.prefix}-kv001"
   location            = var.location
-  resource_group_name = data.azurerm_resource_group.resource_group.name
+  resource_group_name = azurerm_resource_group.resource_group_ml.name
   tags                = var.tags
 
   access_policy                   = []

@@ -1,3 +1,4 @@
+# General variables
 variable "location" {
   description = "Specifies the location for all Azure resources."
   type        = string
@@ -32,40 +33,7 @@ variable "tags" {
   default     = {}
 }
 
-variable "resource_group_name" {
-  description = "Specifies the name of the resource group in which all resources will be deployed."
-  type        = string
-  sensitive   = false
-  validation {
-    condition     = length(var.resource_group_name) >= 2
-    error_message = "Please specify a valid resource group name."
-  }
-}
-
-variable "subnet_id" {
-  description = "Specifies the resource ID of the subnet used for the Private Endpoints."
-  type        = string
-  sensitive   = false
-  validation {
-    condition     = length(split("/", var.subnet_id)) == 11
-    error_message = "Please specify a valid resource ID."
-  }
-}
-
-variable "search_service_enabled" {
-  description = "Specifies whether Azure Cognitive Search should be deployed."
-  type        = bool
-  sensitive   = false
-  default     = false
-}
-
-variable "open_ai_enabled" {
-  description = "Specifies whether Azure Open AI should be deployed."
-  type        = bool
-  sensitive   = false
-  default     = false
-}
-
+// ML variables
 variable "machine_learning_compute_clusters" {
   type = map(object({
     vm_priority = optional(string, "Dedicated")
@@ -101,6 +69,43 @@ variable "machine_learning_compute_instances" {
   #   ])
   #   error_message = "Please specify a compute instance configuration."
   # }
+}
+
+// Service enablement variables
+variable "search_service_enabled" {
+  description = "Specifies whether Azure Cognitive Search should be deployed."
+  type        = bool
+  sensitive   = false
+  default     = false
+}
+
+variable "open_ai_enabled" {
+  description = "Specifies whether Azure Open AI should be deployed."
+  type        = bool
+  sensitive   = false
+  default     = false
+}
+
+// Identity resources
+variable "users_object_id" {
+  description = "Specifies the object ID of the Azure AD group/Entra ID group."
+  type        = string
+  sensitive   = false
+  validation {
+    condition     = length(var.users_object_id) >= 2
+    error_message = "Please specify a valid object ID."
+  }
+}
+
+// Network variables
+variable "subnet_id" {
+  description = "Specifies the resource ID of the subnet used for the Private Endpoints."
+  type        = string
+  sensitive   = false
+  validation {
+    condition     = length(split("/", var.subnet_id)) == 11
+    error_message = "Please specify a valid resource ID."
+  }
 }
 
 variable "private_dns_zone_id_container_registry" {
@@ -213,6 +218,7 @@ variable "private_dns_zone_id_open_ai" {
   }
 }
 
+# Other resources
 variable "data_platform_subscription_ids" {
   description = "Specifies the list of subscription IDs of your data platform."
   type        = list(string)

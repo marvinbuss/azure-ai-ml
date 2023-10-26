@@ -1,7 +1,7 @@
 resource "azurerm_container_registry" "container_registry" {
   name                = replace("${local.prefix}-acr001", "-", "")
   location            = var.location
-  resource_group_name = data.azurerm_resource_group.resource_group.name
+  resource_group_name = azurerm_resource_group.resource_group_ml.name
   tags                = var.tags
   identity {
     type = "SystemAssigned"

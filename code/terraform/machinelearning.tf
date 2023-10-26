@@ -1,7 +1,7 @@
 resource "azurerm_machine_learning_workspace" "machine_learning_workspace" {
   name                = "${local.prefix}-mlw001"
   location            = var.location
-  resource_group_name = data.azurerm_resource_group.resource_group.name
+  resource_group_name = azurerm_resource_group.resource_group_ml.name
   tags                = var.tags
   identity {
     type = "UserAssigned"
