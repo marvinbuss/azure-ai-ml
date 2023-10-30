@@ -47,3 +47,11 @@ resource "azurerm_role_assignment" "users_role_assignment_cognitive_account_cogn
   role_definition_name = "Cognitive Services OpenAI Contributor"
   principal_id         = var.users_object_id
 }
+
+resource "azurerm_role_assignment" "users_role_assignment_cognitive_accounts_cognitive_services_user" {
+  for_each = var.cognitive_services
+
+  scope                = azurerm_cognitive_account.cognitive_accounts[each.key].id
+  role_definition_name = "Cognitive Services User"
+  principal_id         = azurerm_user_assigned_identity.user_assigned_identity.principal_id
+}

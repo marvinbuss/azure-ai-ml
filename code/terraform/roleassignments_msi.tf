@@ -83,3 +83,11 @@ resource "azurerm_role_assignment" "uai_role_assignment_cognitive_account_contri
   role_definition_name = "Contributor"
   principal_id         = azurerm_user_assigned_identity.user_assigned_identity.principal_id
 }
+
+resource "azurerm_role_assignment" "uai_role_assignment_cognitive_accounts_contributor" {
+  for_each = var.cognitive_services
+
+  scope                = azurerm_cognitive_account.cognitive_accounts[each.key].id
+  role_definition_name = "Contributor"
+  principal_id         = azurerm_user_assigned_identity.user_assigned_identity.principal_id
+}
