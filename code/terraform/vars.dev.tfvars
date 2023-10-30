@@ -1,8 +1,8 @@
 # General variables
-location            = "northeurope"
-environment         = "dev"
-prefix              = "dpml"
-tags                = {}
+location    = "northeurope"
+environment = "dev"
+prefix      = "dpml"
+tags        = {}
 
 // ML variables
 machine_learning_compute_clusters = {
@@ -32,6 +32,9 @@ cognitive_services = {
   #   sku_name = "S0"
   # }
 }
+
+// Identity variables
+users_object_id = "1cd588b3-b024-44c5-8bbd-81a9cef8d47a"
 
 // Network variables
 subnet_id                                      = "/subscriptions/8f171ff9-2b5b-4f0f-aed5-7fa360a1d094/resourceGroups/mycrp-prd-logic-network-rg/providers/Microsoft.Network/virtualNetworks/mycrp-prd-logic-vnet001/subnets/PeSubnet"

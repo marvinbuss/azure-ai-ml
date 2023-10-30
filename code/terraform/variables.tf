@@ -103,7 +103,7 @@ variable "cognitive_services" {
   }
 }
 
-// Identity resources
+// Identity variables
 variable "users_object_id" {
   description = "Specifies the object ID of the Azure AD group/Entra ID group."
   type        = string
