@@ -53,5 +53,5 @@ resource "azurerm_role_assignment" "users_role_assignment_cognitive_accounts_cog
 
   scope                = azurerm_cognitive_account.cognitive_accounts[each.key].id
   role_definition_name = "Cognitive Services User"
-  principal_id         = azurerm_user_assigned_identity.user_assigned_identity.principal_id
+  principal_id         = var.users_object_id
 }
