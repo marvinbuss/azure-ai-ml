@@ -86,6 +86,23 @@ variable "open_ai_enabled" {
   default     = false
 }
 
+variable "cognitive_services" {
+  type = map(object({
+    kind     = string
+    sku_name = optional(string, "S0")
+  }))
+  sensitive   = false
+  default     = {}
+  description = "Specifies the cognitive services deployed for this use-case."
+  validation {
+    condition = alltrue([
+      length([for kind in values(var.cognitive_services)[*].kind : kind if !contains(["Academic", "AnomalyDetector", "Bing.Autosuggest", "Bing.Autosuggest.v7", "Bing.CustomSearch", "Bing.Search", "Bing.Search.v7", "Bing.Speech", "Bing.SpellCheck", "Bing.SpellCheck.v7", "CognitiveServices", "ComputerVision", "ContentModerator", "CustomSpeech", "CustomVision.Prediction", "CustomVision.Training", "Emotion", "Face", "FormRecognizer", "ImmersiveReader", "LUIS", "LUIS.Authoring", "MetricsAdvisor", "Personalizer", "QnAMaker", "Recommendations", "SpeakerRecognition", "Speech", "SpeechServices", "SpeechTranslation", "TextAnalytics", "TextTranslation", "WebLM"], kind)]) <= 0,
+      length([for sku_name in values(var.cognitive_services)[*].sku_name : sku_name if !contains(["F0", "F1", "S0", "S", "S1", "S2", "S3", "S4", "S5", "S6", "P0", "P1", "P2", "E0", "DC0"], sku_name)]) <= 0
+    ])
+    error_message = "Please specify a compute instance configuration."
+  }
+}
+
 // Identity resources
 variable "users_object_id" {
   description = "Specifies the object ID of the Azure AD group/Entra ID group."
@@ -214,6 +231,17 @@ variable "private_dns_zone_id_open_ai" {
   default     = ""
   validation {
     condition     = var.private_dns_zone_id_open_ai == "" || (length(split("/", var.private_dns_zone_id_open_ai)) == 9 && endswith(var.private_dns_zone_id_open_ai, "privatelink.openai.azure.com"))
+    error_message = "Please specify a valid resource ID for the private DNS Zone."
+  }
+}
+
+variable "private_dns_zone_id_cognitive_services" {
+  description = "Specifies the resource ID of the private DNS zone for Azure Cognitive Service endpoints. Not required if DNS A-records get created via Azure Policy."
+  type        = string
+  sensitive   = false
+  default     = ""
+  validation {
+    condition     = var.private_dns_zone_id_cognitive_services == "" || (length(split("/", var.private_dns_zone_id_cognitive_services)) == 9 && endswith(var.private_dns_zone_id_cognitive_services, "privatelink.cognitiveservices.azure.com"))
     error_message = "Please specify a valid resource ID for the private DNS Zone."
   }
 }
