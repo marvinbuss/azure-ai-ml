@@ -178,5 +178,19 @@ locals {
       }
     }
   }
-  machine_learning_workspace_outbound_rules = merge(local.default_machine_learning_workspace_outbound_rules, var.search_service_enabled ? local.search_service_machine_learning_workspace_outbound_rules : {}, var.open_ai_enabled ? local.open_ai_machine_learning_workspace_outbound_rules : {})
+  cognitive_accounts_machine_learning_workspace_outbound_rules = {
+    for key, value in var.cognitive_services :
+    "${azurerm_cognitive_account.cognitive_accounts[key].name}-account" => {
+      type     = "PrivateEndpoint"
+      category = "UserDefined"
+      status   = "Active"
+      destination = {
+        serviceResourceId = azurerm_cognitive_account.cognitive_accounts[key].id
+        subresourceTarget = "account"
+        sparkEnabled      = true
+        sparkStatus       = "Active"
+      }
+    }
+  }
+  machine_learning_workspace_outbound_rules = merge(local.default_machine_learning_workspace_outbound_rules, var.search_service_enabled ? local.search_service_machine_learning_workspace_outbound_rules : {}, var.open_ai_enabled ? local.open_ai_machine_learning_workspace_outbound_rules : {}, local.cognitive_accounts_machine_learning_workspace_outbound_rules)
 }
