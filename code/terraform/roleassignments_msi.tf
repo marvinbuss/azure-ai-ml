@@ -1,4 +1,3 @@
-<<<<<<<< HEAD:code/terraform/roleassignments_msi.tf
 resource "azurerm_role_assignment" "uai_role_assignment_resource_group_cs_reader" {
   scope                = azurerm_resource_group.resource_group_cs.id
   role_definition_name = "Reader"
@@ -13,10 +12,6 @@ resource "azurerm_role_assignment" "uai_role_assignment_resource_group_logging_r
 
 resource "azurerm_role_assignment" "uai_role_assignment_resource_group_ml_reader" {
   scope                = azurerm_resource_group.resource_group_ml.id
-========
-resource "azurerm_role_assignment" "uai_role_assignment_resource_group_reader" {
-  scope                = data.azurerm_resource_group.resource_group.id
->>>>>>>> upstream/main:code/terraform/roleassignments_uai.tf
   role_definition_name = "Reader"
   principal_id         = azurerm_user_assigned_identity.user_assigned_identity.principal_id
 }

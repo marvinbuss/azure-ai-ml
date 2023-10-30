@@ -3,7 +3,7 @@ resource "azurerm_cognitive_account" "cognitive_accounts" {
 
   name                = "${local.prefix}-${each.key}-cog001"
   location            = var.location
-  resource_group_name = data.azurerm_resource_group.resource_group.name
+  resource_group_name = azurerm_resource_group.resource_group_cs.name
   tags                = var.tags
   identity {
     type = "SystemAssigned"
