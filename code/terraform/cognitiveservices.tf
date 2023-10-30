@@ -71,7 +71,7 @@ resource "azurerm_private_endpoint" "cognitive_services_private_endpoint" {
     private_connection_resource_id = azurerm_cognitive_account.cognitive_accounts[each.key].id
     subresource_names              = ["account"]
   }
-  subnet_id = var.subnet_id
+  subnet_id = data.azurerm_subnet.subnet.id
   dynamic "private_dns_zone_group" {
     for_each = var.private_dns_zone_id_cognitive_services == "" ? [] : [1]
     content {
