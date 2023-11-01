@@ -1,0 +1,155 @@
+{
+  "type": "Microsoft.Authorization/policyDefinitions",
+  "name": "Dine-DNSZoneGroup-CognitiveServices-Account",
+  "properties": {
+    "displayName": "Configure Azure Cognitive Service private DNS zone group",
+    "policyType": "Custom",
+    "mode": "Indexed",
+    "description": "Configure private DNS zone group to override the DNS resolution for a Cognitive Service account groupID private endpoint.",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "Cognitive Services",
+      "preview": false,
+      "deprecated": false
+    },
+    "parameters": {
+      "privateDnsZoneIdCognitiveServices": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Configure a private DNS Zone ID (privatelink.cognitiveservices.azure.com)",
+          "description": "Configure private DNS zone group to override the DNS resolution for the private endpoint (privatelink.cognitiveservices.azure.com).",
+          "strongType": "Microsoft.Network/privateDnsZones",
+          "assignPermissions": true
+        }
+      },
+      "privateDnsZoneIdOpenAi": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Configure a private DNS Zone ID (privatelink.openai.azure.com)",
+          "description": "Configure private DNS zone group to override the DNS resolution for the private endpoint (privatelink.openai.azure.com).",
+          "strongType": "Microsoft.Network/privateDnsZones",
+          "assignPermissions": true
+        }
+      },
+      "effect": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Effect",
+          "description": "Enable or disable the execution of the policy"
+        },
+        "allowedValues": [
+          "DeployIfNotExists",
+          "Disabled"
+        ],
+        "defaultValue": "DeployIfNotExists"
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allOf": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Network/privateEndpoints"
+          },
+          {
+            "field": "Microsoft.Network/privateEndpoints/privateLinkServiceConnections[*].privateLinkServiceId",
+            "contains": "Microsoft.CognitiveServices/accounts"
+          },
+          {
+            "count": {
+              "field": "Microsoft.Network/privateEndpoints/privateLinkServiceConnections[*].groupIds[*]",
+              "where": {
+                "field": "Microsoft.Network/privateEndpoints/privateLinkServiceConnections[*].groupIds[*]",
+                "equals": "account"
+              }
+            },
+            "greaterOrEquals": 1
+          }
+        ]
+      },
+      "then": {
+        "effect": "[parameters('effect')]",
+        "details": {
+          "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
+          "evaluationDelay": "AfterProvisioningSuccess",
+          "roleDefinitionIds": [
+            "/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7",
+            "/providers/Microsoft.Authorization/roleDefinitions/acdd72a7-3385-48ef-bd42-f606fba81ae7"
+          ],
+          "existenceCondition": {
+            "allOf": [
+              {
+                "field": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups/privateDnsZoneConfigs[*].privateDnsZoneId",
+                "in": [
+                  "[parameters('privateDnsZoneIdCognitiveServices')]",
+                  "[parameters('privateDnsZoneIdOpenAi')]"
+                ]
+              }
+            ]
+          },
+          "deployment": {
+            "properties": {
+              "mode": "incremental",
+              "template": {
+                "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                "contentVersion": "1.0.0.0",
+                "parameters": {
+                  "privateDnsZoneIdCognitiveServices": {
+                    "type": "string"
+                  },
+                  "privateDnsZoneIdOpenAi": {
+                    "type": "string"
+                  },
+                  "privateEndpointName": {
+                    "type": "string"
+                  },
+                  "location": {
+                    "type": "string"
+                  },
+                  "privateLinkServiceId": {
+                    "type": "array"
+                  }
+                },
+                "resources": [
+                  {
+                    "name": "[concat(parameters('privateEndpointName'), '/deployedByPolicy')]",
+                    "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
+                    "apiVersion": "2020-03-01",
+                    "location": "[parameters('location')]",
+                    "properties": {
+                      "privateDnsZoneConfigs": [
+                        {
+                          "name": "[concat(parameters('privateEndpointName'), '-aRecord')]",
+                          "properties": {
+                            "privateDnsZoneId": "[if(equals(reference(parameters('privateLinkServiceId')[0], '2022-12-01', 'Full').kind, 'OpenAI'), parameters('privateDnsZoneIdOpenAi'), parameters('privateDnsZoneIdCognitiveServices'))]"
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              },
+              "parameters": {
+                "privateDnsZoneIdCognitiveServices": {
+                  "value": "[parameters('privateDnsZoneIdCognitiveServices')]"
+                },
+                "privateDnsZoneIdOpenAi": {
+                  "value": "[parameters('privateDnsZoneIdOpenAi')]"
+                },
+                "privateEndpointName": {
+                  "value": "[field('name')]"
+                },
+                "location": {
+                  "value": "[field('location')]"
+                },
+                "privateLinkServiceId": {
+                  "value": "[field('Microsoft.Network/privateEndpoints/privateLinkServiceConnections[*].privateLinkServiceId')]"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

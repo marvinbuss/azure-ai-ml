@@ -1,0 +1,293 @@
+{
+  "type": "Microsoft.Authorization/policySetDefinitions",
+  "apiVersion": "2021-06-01",
+  "name": "Cmplnt-PrvtDnsZnGrps",
+  "scope": null,
+  "properties": {
+    "displayName": "Compliant Private Dns Zone Groups Policy Set",
+    "description": "This policy set ensures compliant Private Dns Zone Groups.",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "Network"
+    },
+    "policyDefinitionGroups": [
+      {
+        "name": "Encryption",
+        "category": "Data Protection",
+        "displayName": "Ensure Disgnostics is using secure encryption",
+        "description": "Policy to ensure Disgnostics is using secure encryption"
+      },
+      {
+        "name": "Network",
+        "category": "Network Security",
+        "displayName": "Ensure Disgnostics is not accessible over the public internet",
+        "description": "Policy to ensure Disgnostics is not accessible over the public internet"
+      },
+      {
+        "name": "Identity",
+        "category": "Identity Management",
+        "displayName": "Ensure usage of centralized identity and auhtorization system for Disgnostics",
+        "description": "Policy to ensure Disgnostics is not using local authorization"
+      },
+      {
+        "name": "Logging",
+        "category": "Logging and Threat Detection",
+        "displayName": "Ensure Disgnostics is logging all events to Log Analytics",
+        "description": "Policy to ensure Disgnostics is logging all events to Log Analytics workspace"
+      }
+    ],
+    "parameters": {
+      "privateDnsZoneIdCognitiveServicesAccount": {
+        "type": "string",
+        "defaultValue": ""
+      },
+      "privateDnsZoneIdOpenAiAccount": {
+        "type": "string",
+        "defaultValue": ""
+      },
+      "privateDnsZoneIdContainerRegistryRegistry": {
+        "type": "string",
+        "defaultValue": ""
+      },
+      "privateDnsZoneIdKeyVaultVault": {
+        "type": "string",
+        "defaultValue": ""
+      },
+      "privateDnsZoneIdMachineLearningAzureMl": {
+        "type": "string",
+        "defaultValue": ""
+      },
+      "privateDnsZoneIdMachineLearningNotebooks": {
+        "type": "string",
+        "defaultValue": ""
+      },
+      "privateDnsZoneIdSearchSearchService": {
+        "type": "string",
+        "defaultValue": ""
+      },
+      "privateDnsZoneIdStorageBlob": {
+        "type": "string",
+        "defaultValue": ""
+      },
+      "privateDnsZoneIdStorageDfs": {
+        "type": "string",
+        "defaultValue": ""
+      },
+      "privateDnsZoneIdStorageFile": {
+        "type": "string",
+        "defaultValue": ""
+      },
+      "privateDnsZoneIdStorageQueue": {
+        "type": "string",
+        "defaultValue": ""
+      },
+      "privateDnsZoneIdStorageTable": {
+        "type": "string",
+        "defaultValue": ""
+      },
+      "privateDnsZoneIdStorageWeb": {
+        "type": "string",
+        "defaultValue": ""
+      },
+      "privateDnsZoneIdSynapseDev": {
+        "type": "string",
+        "defaultValue": ""
+      },
+      "privateDnsZoneIdSynapseSql": {
+        "type": "string",
+        "defaultValue": ""
+      }
+    },
+    "policyDefinitions": [
+      {
+        "policyDefinitionId": "${scope_id}/providers/Microsoft.Authorization/policyDefinitions/Dine-DNSZoneGroup-CognitiveServices-Account",
+        "parameters": {
+          "effect": {
+            "value": "DeployIfNotExists"
+          },
+          "privateDnsZoneIdCognitiveServices": {
+            "value": "[parameters('privateDnsZoneIdCognitiveServicesAccount')]"
+          },
+          "privateDnsZoneIdOpenAi": {
+            "value": "[parameters('privateDnsZoneIdOpenAiAccount')]"
+          }
+        },
+        "groupNames": [
+          "Network"
+        ]
+      },
+      {
+        "policyDefinitionId": "${scope_id}/providers/Microsoft.Authorization/policyDefinitions/Dine-DNSZoneGroup-ContainerRegistry-Registry",
+        "parameters": {
+          "effect": {
+            "value": "DeployIfNotExists"
+          },
+          "privateDnsZoneId": {
+            "value": "[parameters('privateDnsZoneIdContainerRegistryRegistry')]"
+          }
+        },
+        "groupNames": [
+          "Network"
+        ]
+      },
+      {
+        "policyDefinitionId": "${scope_id}/providers/Microsoft.Authorization/policyDefinitions/Dine-DNSZoneGroup-KeyVault-Vault",
+        "parameters": {
+          "effect": {
+            "value": "DeployIfNotExists"
+          },
+          "privateDnsZoneId": {
+            "value": "[parameters('privateDnsZoneIdKeyVaultVault')]"
+          }
+        },
+        "groupNames": [
+          "Network"
+        ]
+      },
+      {
+        "policyDefinitionId": "${scope_id}/providers/Microsoft.Authorization/policyDefinitions/Dine-DNSZoneGroup-MachineLearning-Amlworkspace",
+        "parameters": {
+          "effect": {
+            "value": "DeployIfNotExists"
+          },
+          "privateDnsZoneIdAzureml": {
+            "value": "[parameters('privateDnsZoneIdMachineLearningAzureMl')]"
+          },
+          "privateDnsZoneIdNotebooks": {
+            "value": "[parameters('privateDnsZoneIdMachineLearningNotebooks')]"
+          }
+        },
+        "groupNames": [
+          "Network"
+        ]
+      },
+      {
+        "policyDefinitionId": "${scope_id}/providers/Microsoft.Authorization/policyDefinitions/Dine-DNSZoneGroup-Search-SearchService",
+        "parameters": {
+          "effect": {
+            "value": "DeployIfNotExists"
+          },
+          "privateDnsZoneId": {
+            "value": "[parameters('privateDnsZoneIdSearchSearchService')]"
+          }
+        },
+        "groupNames": [
+          "Network"
+        ]
+      },
+      {
+        "policyDefinitionId": "${scope_id}/providers/Microsoft.Authorization/policyDefinitions/Dine-DNSZoneGroup-Storage-Blob",
+        "parameters": {
+          "effect": {
+            "value": "DeployIfNotExists"
+          },
+          "privateDnsZoneId": {
+            "value": "[parameters('privateDnsZoneIdStorageBlob')]"
+          }
+        },
+        "groupNames": [
+          "Network"
+        ]
+      },
+      {
+        "policyDefinitionId": "${scope_id}/providers/Microsoft.Authorization/policyDefinitions/Dine-DNSZoneGroup-Storage-Dfs",
+        "parameters": {
+          "effect": {
+            "value": "DeployIfNotExists"
+          },
+          "privateDnsZoneId": {
+            "value": "[parameters('privateDnsZoneIdStorageDfs')]"
+          }
+        },
+        "groupNames": [
+          "Network"
+        ]
+      },
+      {
+        "policyDefinitionId": "${scope_id}/providers/Microsoft.Authorization/policyDefinitions/Dine-DNSZoneGroup-Storage-File",
+        "parameters": {
+          "effect": {
+            "value": "DeployIfNotExists"
+          },
+          "privateDnsZoneId": {
+            "value": "[parameters('privateDnsZoneIdStorageFile')]"
+          }
+        },
+        "groupNames": [
+          "Network"
+        ]
+      },
+      {
+        "policyDefinitionId": "${scope_id}/providers/Microsoft.Authorization/policyDefinitions/Dine-DNSZoneGroup-Storage-Queue",
+        "parameters": {
+          "effect": {
+            "value": "DeployIfNotExists"
+          },
+          "privateDnsZoneId": {
+            "value": "[parameters('privateDnsZoneIdStorageQueue')]"
+          }
+        },
+        "groupNames": [
+          "Network"
+        ]
+      },
+      {
+        "policyDefinitionId": "${scope_id}/providers/Microsoft.Authorization/policyDefinitions/Dine-DNSZoneGroup-Storage-Table",
+        "parameters": {
+          "effect": {
+            "value": "DeployIfNotExists"
+          },
+          "privateDnsZoneId": {
+            "value": "[parameters('privateDnsZoneIdStorageTable')]"
+          }
+        },
+        "groupNames": [
+          "Network"
+        ]
+      },
+      {
+        "policyDefinitionId": "${scope_id}/providers/Microsoft.Authorization/policyDefinitions/Dine-DNSZoneGroup-Storage-Web",
+        "parameters": {
+          "effect": {
+            "value": "DeployIfNotExists"
+          },
+          "privateDnsZoneId": {
+            "value": "[parameters('privateDnsZoneIdStorageWeb')]"
+          }
+        },
+        "groupNames": [
+          "Network"
+        ]
+      },
+      {
+        "policyDefinitionId": "${scope_id}/providers/Microsoft.Authorization/policyDefinitions/Dine-DNSZoneGroup-Synapse-Dev",
+        "parameters": {
+          "effect": {
+            "value": "DeployIfNotExists"
+          },
+          "privateDnsZoneId": {
+            "value": "[parameters('privateDnsZoneIdSynapseDev')]"
+          }
+        },
+        "groupNames": [
+          "Network"
+        ]
+      },
+      {
+        "policyDefinitionId": "${scope_id}/providers/Microsoft.Authorization/policyDefinitions/Dine-DNSZoneGroup-Synapse-Sql",
+        "parameters": {
+          "effect": {
+            "value": "DeployIfNotExists"
+          },
+          "privateDnsZoneId": {
+            "value": "[parameters('privateDnsZoneIdSynapseSql')]"
+          }
+        },
+        "groupNames": [
+          "Network"
+        ]
+      }
+    ]
+  }
+}

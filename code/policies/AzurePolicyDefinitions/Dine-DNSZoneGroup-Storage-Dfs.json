@@ -1,14 +1,14 @@
 {
   "type": "Microsoft.Authorization/policyDefinitions",
-  "name": "Deploy-DNSZoneGroup-KeyVault-PrivateEndpoint",
+  "name": "Dine-DNSZoneGroup-Storage-Dfs",
   "properties": {
-    "displayName": "Configure Azure Key Vault private DNS zone group",
+    "displayName": "Configure Azure Storage Dfs private DNS zone group",
     "policyType": "Custom",
     "mode": "Indexed",
-    "description": "Configure private DNS zone group to override the DNS resolution for a Key Vault vault groupID private endpoint.",
+    "description": "Configure private DNS zone group to override the DNS resolution for a Storage dfs groupID private endpoint.",
     "metadata": {
       "version": "1.0.0",
-      "category": "Key Vault",
+      "category": "Storage",
       "preview": false,
       "deprecated": false
     },
@@ -44,14 +44,17 @@
           },
           {
             "field": "Microsoft.Network/privateEndpoints/privateLinkServiceConnections[*].privateLinkServiceId",
-            "contains": "Microsoft.KeyVault/vaults"
+            "contains": "Microsoft.Storage/storageAccounts"
           },
           {
             "count": {
               "field": "Microsoft.Network/privateEndpoints/privateLinkServiceConnections[*].groupIds[*]",
               "where": {
                 "field": "Microsoft.Network/privateEndpoints/privateLinkServiceConnections[*].groupIds[*]",
-                "equals": "vault"
+                "in": [
+                  "dfs",
+                  "dfs_secondary"
+                ]
               }
             },
             "greaterOrEquals": 1
@@ -62,6 +65,7 @@
         "effect": "[parameters('effect')]",
         "details": {
           "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
+          "evaluationDelay": "AfterProvisioningSuccess",
           "roleDefinitionIds": [
             "/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7"
           ],
