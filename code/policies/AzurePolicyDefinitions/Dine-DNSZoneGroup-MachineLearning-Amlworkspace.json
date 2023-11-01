@@ -1,23 +1,32 @@
 {
   "type": "Microsoft.Authorization/policyDefinitions",
-  "name": "Deploy-DNSZoneGroup-KeyVault-PrivateEndpoint",
+  "name": "Dine-DNSZoneGroup-MachineLearning-Amlworkspace",
   "properties": {
-    "displayName": "Configure Azure Key Vault private DNS zone group",
+    "displayName": "Configure Azure Machine Learning private DNS zone group",
     "policyType": "Custom",
     "mode": "Indexed",
-    "description": "Configure private DNS zone group to override the DNS resolution for a Key Vault vault groupID private endpoint.",
+    "description": "Configure private DNS zone group to override the DNS resolution for a Machine Learning amlworkspace groupID private endpoint.",
     "metadata": {
       "version": "1.0.0",
-      "category": "Key Vault",
+      "category": "Machine Learning",
       "preview": false,
       "deprecated": false
     },
     "parameters": {
-      "privateDnsZoneId": {
+      "privateDnsZoneIdAzureml": {
         "type": "String",
         "metadata": {
-          "displayName": "Configure a private DNS Zone ID",
-          "description": "Configure private DNS zone group to override the DNS resolution for the private endpoint.",
+          "displayName": "Configure a private DNS Zone ID (privatelink.api.azureml.ms)",
+          "description": "Configure private DNS zone group to override the DNS resolution for the private endpoint (privatelink.api.azureml.ms).",
+          "strongType": "Microsoft.Network/privateDnsZones",
+          "assignPermissions": true
+        }
+      },
+      "privateDnsZoneIdNotebooks": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Configure a private DNS Zone ID (privatelink.notebooks.azure.net)",
+          "description": "Configure private DNS zone group to override the DNS resolution for the private endpoint (privatelink.notebooks.azure.net).",
           "strongType": "Microsoft.Network/privateDnsZones",
           "assignPermissions": true
         }
@@ -44,14 +53,14 @@
           },
           {
             "field": "Microsoft.Network/privateEndpoints/privateLinkServiceConnections[*].privateLinkServiceId",
-            "contains": "Microsoft.KeyVault/vaults"
+            "contains": "Microsoft.MachineLearningServices/workspaces"
           },
           {
             "count": {
               "field": "Microsoft.Network/privateEndpoints/privateLinkServiceConnections[*].groupIds[*]",
               "where": {
                 "field": "Microsoft.Network/privateEndpoints/privateLinkServiceConnections[*].groupIds[*]",
-                "equals": "vault"
+                "equals": "amlworkspace"
               }
             },
             "greaterOrEquals": 1
@@ -62,6 +71,7 @@
         "effect": "[parameters('effect')]",
         "details": {
           "type": "Microsoft.Network/privateEndpoints/privateDnsZoneGroups",
+          "evaluationDelay": "AfterProvisioningSuccess",
           "roleDefinitionIds": [
             "/providers/Microsoft.Authorization/roleDefinitions/4d97b98b-1d4f-4787-a291-c67834d212e7"
           ],
@@ -80,7 +90,10 @@
                 "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
                 "contentVersion": "1.0.0.0",
                 "parameters": {
-                  "privateDnsZoneId": {
+                  "privateDnsZoneIdAzureml": {
+                    "type": "string"
+                  },
+                  "privateDnsZoneIdNotebooks": {
                     "type": "string"
                   },
                   "privateEndpointName": {
@@ -99,9 +112,15 @@
                     "properties": {
                       "privateDnsZoneConfigs": [
                         {
-                          "name": "[concat(parameters('privateEndpointName'), '-aRecord')]",
+                          "name": "[concat(parameters('privateEndpointName'), '-azureml-aRecord')]",
                           "properties": {
-                            "privateDnsZoneId": "[parameters('privateDnsZoneId')]"
+                            "privateDnsZoneId": "[parameters('privateDnsZoneIdAzureml')]"
+                          }
+                        },
+                        {
+                          "name": "[concat(parameters('privateEndpointName'), '-notebooks-aRecord')]",
+                          "properties": {
+                            "privateDnsZoneId": "[parameters('privateDnsZoneIdNotebooks')]"
                           }
                         }
                       ]
@@ -110,8 +129,11 @@
                 ]
               },
               "parameters": {
-                "privateDnsZoneId": {
-                  "value": "[parameters('privateDnsZoneId')]"
+                "privateDnsZoneIdAzureml": {
+                  "value": "[parameters('privateDnsZoneIdAzureml')]"
+                },
+                "privateDnsZoneIdNotebooks": {
+                  "value": "[parameters('privateDnsZoneIdNotebooks')]"
                 },
                 "privateEndpointName": {
                   "value": "[field('name')]"
