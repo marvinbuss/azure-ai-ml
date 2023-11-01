@@ -1,0 +1,71 @@
+{
+  "type": "Microsoft.Authorization/policyAssignments",
+  "apiVersion": "2022-06-01",
+  "name": "Cmplnt-PrivateDnsZoneGroups",
+  "scope": null,
+  "location": "${default_location}",
+  "identity": {
+    "type": "SystemAssigned"
+  },
+  "properties": {
+    "displayName": "Compliant Private Dns Zone Groups Policy Assignment",
+    "description": "This policy assignment ensures compliant Private Dns Zone Groups.",
+    "enforcementMode": "Default",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "Network"
+    },
+    "nonComplianceMessages": [],
+    "notScopes": [],
+    "overrides": [],
+    "resourceSelectors": [],
+    "parameters": {
+      "privateDnsZoneIdCognitiveServicesAccount": {
+        "value": "${private_dns_zone_id_cognitive_services_account}"
+      },
+      "privateDnsZoneIdContainerRegistryRegistry": {
+        "value": "${private_dns_zone_id_container_registry_registry}"
+      },
+      "privateDnsZoneIdKeyVaultVault": {
+        "value": "${private_dns_zone_id_key_vault_vault}"
+      },
+      "privateDnsZoneIdMachineLearningAzureMl": {
+        "value": "${private_dns_zone_id_machine_learning_azure_ml}"
+      },
+      "privateDnsZoneIdMachineLearningNotebooks": {
+        "value": "${private_dns_zone_id_machine_learning_notebooks}"
+      },
+      "privateDnsZoneIdOpenAiAccount": {
+        "value": "${private_dns_zone_id_open_ai_account}"
+      },
+      "privateDnsZoneIdSearchSearchService": {
+        "value": "${private_dns_zone_id_search_search_service}"
+      },
+      "privateDnsZoneIdStorageBlob": {
+        "value": "${private_dns_zone_id_storage_blob}"
+      },
+      "privateDnsZoneIdStorageDfs": {
+        "value": "${private_dns_zone_id_storage_dfs}"
+      },
+      "privateDnsZoneIdStorageFile": {
+        "value": "${private_dns_zone_id_storage_file}"
+      },
+      "privateDnsZoneIdStorageQueue": {
+        "value": "${private_dns_zone_id_storage_queue}"
+      },
+      "privateDnsZoneIdStorageTable": {
+        "value": "${private_dns_zone_id_storage_table}"
+      },
+      "privateDnsZoneIdStorageWeb": {
+        "value": "${private_dns_zone_id_storage_web}"
+      },
+      "privateDnsZoneIdSynapseDev": {
+        "value": "${private_dns_zone_id_synapse_dev}"
+      },
+      "privateDnsZoneIdSynapseSql": {
+        "value": "${private_dns_zone_id_synapse_sql}"
+      }
+    },
+    "policyDefinitionId": "${scope_id}/providers/Microsoft.Authorization/policySetDefinitions/Cmplnt-PrivateDnsZoneGroups"
+  }
+}
