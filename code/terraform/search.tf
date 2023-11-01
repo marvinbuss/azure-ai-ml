@@ -76,4 +76,9 @@ resource "azurerm_private_endpoint" "search_service_private_endpoint" {
       ]
     }
   }
+  lifecycle {
+    ignore_changes = [
+      private_dns_zone_group
+    ]
+  }
 }
