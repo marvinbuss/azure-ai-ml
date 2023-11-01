@@ -9,7 +9,7 @@ resource "azurerm_cognitive_account" "cognitive_accounts" {
     type = "SystemAssigned"
   }
 
-  custom_subdomain_name      = "${local.prefix}-${each.value.kind}-cog001"
+  custom_subdomain_name      = "${local.prefix}-${each.key}-cog001"
   dynamic_throttling_enabled = false
   fqdns = [
     trimsuffix(replace(azurerm_storage_account.storage.primary_blob_endpoint, "https://", ""), "/")
@@ -80,5 +80,10 @@ resource "azurerm_private_endpoint" "cognitive_services_private_endpoint" {
         var.private_dns_zone_id_cognitive_services
       ]
     }
+  }
+  lifecycle {
+    ignore_changes = [
+      private_dns_zone_group
+    ]
   }
 }

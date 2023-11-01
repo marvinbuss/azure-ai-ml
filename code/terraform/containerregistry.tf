@@ -86,4 +86,9 @@ resource "azurerm_private_endpoint" "container_registry_private_endpoint" {
       ]
     }
   }
+  lifecycle {
+    ignore_changes = [
+      private_dns_zone_group
+    ]
+  }
 }

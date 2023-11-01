@@ -125,6 +125,11 @@ resource "azurerm_private_endpoint" "storage_private_endpoint_blob" {
       ]
     }
   }
+  lifecycle {
+    ignore_changes = [
+      private_dns_zone_group
+    ]
+  }
 }
 
 resource "azurerm_private_endpoint" "storage_private_endpoint_file" {
@@ -149,6 +154,11 @@ resource "azurerm_private_endpoint" "storage_private_endpoint_file" {
         var.private_dns_zone_id_file
       ]
     }
+  }
+  lifecycle {
+    ignore_changes = [
+      private_dns_zone_group
+    ]
   }
 }
 
@@ -175,6 +185,11 @@ resource "azurerm_private_endpoint" "storage_private_endpoint_table" {
       ]
     }
   }
+  lifecycle {
+    ignore_changes = [
+      private_dns_zone_group
+    ]
+  }
 }
 
 resource "azurerm_private_endpoint" "storage_private_endpoint_queue" {
@@ -199,5 +214,10 @@ resource "azurerm_private_endpoint" "storage_private_endpoint_queue" {
         var.private_dns_zone_id_queue
       ]
     }
+  }
+  lifecycle {
+    ignore_changes = [
+      private_dns_zone_group
+    ]
   }
 }

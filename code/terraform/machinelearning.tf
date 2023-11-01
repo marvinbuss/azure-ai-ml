@@ -159,4 +159,9 @@ resource "azurerm_private_endpoint" "machine_learning_workspace_private_endpoint
       ]
     }
   }
+  lifecycle {
+    ignore_changes = [
+      private_dns_zone_group
+    ]
+  }
 }
