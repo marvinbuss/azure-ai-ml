@@ -1,7 +1,7 @@
 {
   "type": "Microsoft.Authorization/policyAssignments",
   "apiVersion": "2022-06-01",
-  "name": "Cmplnt-PrivateDnsZoneGroups",
+  "name": "Cmplnt-PrvtDnsZnGrps",
   "scope": null,
   "location": "${default_location}",
   "identity": {
@@ -66,6 +66,6 @@
         "value": "${private_dns_zone_id_synapse_sql}"
       }
     },
-    "policyDefinitionId": "${scope_id}/providers/Microsoft.Authorization/policySetDefinitions/Cmplnt-PrivateDnsZoneGroups"
+    "policyDefinitionId": "${scope_id}/providers/Microsoft.Authorization/policySetDefinitions/Cmplnt-PrvtDnsZnGrps"
   }
 }

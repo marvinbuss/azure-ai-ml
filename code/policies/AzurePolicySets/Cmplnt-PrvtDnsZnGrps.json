@@ -1,7 +1,7 @@
 {
   "type": "Microsoft.Authorization/policySetDefinitions",
   "apiVersion": "2021-06-01",
-  "name": "Cmplnt-PrivateDnsZoneGroups",
+  "name": "Cmplnt-PrvtDnsZnGrps",
   "scope": null,
   "properties": {
     "displayName": "Compliant Private Dns Zone Groups Policy Set",
