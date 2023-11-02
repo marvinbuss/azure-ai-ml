@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.4.1008.15138",
-      "templateHash": "10224713317377197829"
+      "version": "0.22.6.54827",
+      "templateHash": "17292594294188932056"
     }
   },
   "parameters": {
@@ -18,22 +18,22 @@
     "environment": {
       "type": "string",
       "defaultValue": "dev",
-      "metadata": {
-        "description": "Specifies the environment of your Data Landing Zone or Data Management Zone."
-      },
       "allowedValues": [
         "dev",
         "tst",
         "prd"
-      ]
+      ],
+      "metadata": {
+        "description": "Specifies the environment of your Data Landing Zone or Data Management Zone."
+      }
     },
     "prefix": {
       "type": "string",
+      "minLength": 2,
+      "maxLength": 10,
       "metadata": {
         "description": "Specifies the prefix of your Data Landing Zone or Data Management Zone."
-      },
-      "maxLength": 10,
-      "minLength": 2
+      }
     },
     "tags": {
       "type": "object",
@@ -63,13 +63,12 @@
       }
     },
     "administratorPassword": {
-      "type": "secureString",
+      "type": "securestring",
       "metadata": {
         "description": "Specifies the administrator password of the virtual machine."
       }
     }
   },
-  "functions": [],
   "variables": {
     "name": "[toLower(format('{0}-{1}', parameters('prefix'), parameters('environment')))]",
     "tagsDefault": {
@@ -85,7 +84,7 @@
   "resources": [
     {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2020-06-01",
+      "apiVersion": "2022-09-01",
       "name": "selfHostedAgentDevOps001",
       "properties": {
         "expressionEvaluationOptions": {
@@ -127,8 +126,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.4.1008.15138",
-              "templateHash": "4038817811886062802"
+              "version": "0.22.6.54827",
+              "templateHash": "10854679995272695449"
             }
           },
           "parameters": {
@@ -161,10 +160,9 @@
               "defaultValue": "VmssMainUser"
             },
             "administratorPassword": {
-              "type": "secureString"
+              "type": "securestring"
             }
           },
-          "functions": [],
           "variables": {
             "loadBalancerName": "[format('{0}-lb', parameters('vmssName'))]"
           },
@@ -271,12 +269,12 @@
                                 },
                                 "loadBalancerBackendAddressPools": [
                                   {
-                                    "id": "[reference(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName'))).backendAddressPools[0].id]"
+                                    "id": "[reference(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '2021-02-01').backendAddressPools[0].id]"
                                   }
                                 ],
                                 "loadBalancerInboundNatPools": [
                                   {
-                                    "id": "[reference(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName'))).inboundNatPools[0].id]"
+                                    "id": "[reference(resourceId('Microsoft.Network/loadBalancers', variables('loadBalancerName')), '2021-02-01').inboundNatPools[0].id]"
                                   }
                                 ]
                               }
