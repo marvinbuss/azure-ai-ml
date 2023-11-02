@@ -128,9 +128,9 @@ resource storageManagementPolicies 'Microsoft.Storage/storageAccounts/management
                 tierToCool: {
                   daysAfterCreationGreaterThan: 90
                 }
-                tierToArchive: {// Not available for HNS storage yet
-                  daysAfterCreationGreaterThan: 365
-                }
+                // tierToArchive: {// Not available for HNS storage yet
+                //   daysAfterCreationGreaterThan: 365
+                // }
                 delete: {
                   daysAfterCreationGreaterThan: 730
                 }
@@ -139,9 +139,9 @@ resource storageManagementPolicies 'Microsoft.Storage/storageAccounts/management
                 tierToCool: {
                   daysAfterCreationGreaterThan: 90
                 }
-                tierToArchive: {// Uncomment, if you want to move data to the archive tier
-                  daysAfterCreationGreaterThan: 365
-                }
+                // tierToArchive: {// Uncomment, if you want to move data to the archive tier
+                //   daysAfterCreationGreaterThan: 365
+                // }
                 delete: {
                   daysAfterCreationGreaterThan: 730
                 }
@@ -158,6 +158,9 @@ resource storageManagementPolicies 'Microsoft.Storage/storageAccounts/management
       ]
     }
   }
+  dependsOn: [
+    storageBlobServices
+  ]
 }
 
 resource storageBlobServices 'Microsoft.Storage/storageAccounts/blobServices@2021-02-01' = {
@@ -190,10 +193,10 @@ resource storageBlobServices 'Microsoft.Storage/storageAccounts/blobServices@202
       ]
       trackingGranularityInDays: 1
     }
-    restorePolicy: {
-      enabled: true
-      days: 7
-    }
+    // restorePolicy: {
+    //   enabled: true
+    //   days: 7
+    // }
   }
 }
 

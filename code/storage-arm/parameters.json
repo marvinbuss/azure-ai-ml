@@ -1,0 +1,29 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "value": "northeurope"
+    },
+    "environment": {
+      "value": "dev"
+    },
+    "prefix": {
+      "value": "tfstrg0783"
+    },
+    "tags": {
+      "value": {}
+    },
+    "storageContainerNames": {
+      "value": [
+        "terraform"
+      ]
+    },
+    "servicePrincipalClientId": {
+      "value": "4b9deed4-7d41-48e6-a429-bef3232b7477"
+    },
+    "subnetId": {
+      "value": "/subscriptions/8f171ff9-2b5b-4f0f-aed5-7fa360a1d094/resourceGroups/mycrp-prd-global-dns/providers/Microsoft.Network/privateDnsZones/privatelink.blob.core.windows.net"
+    }
+  }
+}
