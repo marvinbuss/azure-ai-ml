@@ -1,0 +1,30 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "value": "northeurope"
+    },
+    "environment": {
+      "value": "dev"
+    },
+    "prefix": {
+      "value": "adoagent"
+    },
+    "tags": {
+      "value": {}
+    },
+    "subnetId": {
+      "value": "/subscriptions/8f171ff9-2b5b-4f0f-aed5-7fa360a1d094/resourceGroups/mycrp-prd-logic-network-rg/providers/Microsoft.Network/virtualNetworks/mycrp-prd-logic-vnet001/subnets/PeSubnet"
+    },
+    "virtualMachineSku": {
+      "value": "Standard_D2ds_v4"
+    },
+    "administratorUsername": {
+      "value": "VmMainUser"
+    },
+    "administratorPassword": {
+      "value": "<provided-in-pipeline>"
+    }
+  }
+}

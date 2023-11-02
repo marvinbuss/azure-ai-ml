@@ -9,7 +9,7 @@ param location string
 param tags object
 param subnetId string
 param vmssName string
-param vmssSkuName string = 'Standard_F8s_v2'
+param vmssSkuName string = 'Standard_D2ds_v4'
 param vmssSkuTier string = 'Standard'
 param vmssSkuCapacity int = 1
 param administratorUsername string = 'VmssMainUser'
@@ -20,12 +20,12 @@ param administratorPassword string
 var loadBalancerName = '${vmssName}-lb'
 
 // Resources
-resource loadbalancer 'Microsoft.Network/loadBalancers@2021-02-01' = {
+resource loadbalancer 'Microsoft.Network/loadBalancers@2023-05-01' = {
   name: loadBalancerName
   location: location
   tags: tags
   sku: {
-    name: 'Basic'
+    name: 'Standard'
     tier: 'Regional'
   }
   properties: {
@@ -73,7 +73,7 @@ resource loadbalancer 'Microsoft.Network/loadBalancers@2021-02-01' = {
   }
 }
 
-resource scalesetagent 'Microsoft.Compute/virtualMachineScaleSets@2021-04-01' = {
+resource scalesetagent 'Microsoft.Compute/virtualMachineScaleSets@2023-07-01' = {
   name: vmssName
   location: location
   tags: tags
@@ -82,6 +82,11 @@ resource scalesetagent 'Microsoft.Compute/virtualMachineScaleSets@2021-04-01' = 
     tier: vmssSkuTier
     capacity: vmssSkuCapacity
   }
+  zones: [
+    '1'
+    '2'
+    '3'
+  ]
   properties: {
     additionalCapabilities: {}
     automaticRepairsPolicy: {}
@@ -92,14 +97,14 @@ resource scalesetagent 'Microsoft.Compute/virtualMachineScaleSets@2021-04-01' = 
         'Default'
       ]
     }
-    singlePlacementGroup: true
+    singlePlacementGroup: false
     upgradePolicy: {
       mode: 'Manual'
     }
     virtualMachineProfile: {
       diagnosticsProfile: {
         bootDiagnostics: {
-          enabled: false
+          enabled: true
         }
       }
       networkProfile: {
@@ -140,7 +145,12 @@ resource scalesetagent 'Microsoft.Compute/virtualMachineScaleSets@2021-04-01' = 
         computerNamePrefix: take(vmssName, 9)
         customData: ''
         linuxConfiguration: {
-          disablePasswordAuthentication: false
+          enableVMAgentPlatformUpdates: true
+          provisionVMAgent: true
+          patchSettings: {
+            assessmentMode: 'ImageDefault'
+            patchMode: 'ImageDefault'
+          }
         }
       }
       priority: 'Regular'
@@ -148,7 +158,7 @@ resource scalesetagent 'Microsoft.Compute/virtualMachineScaleSets@2021-04-01' = 
         imageReference: {
           publisher: 'canonical'
           offer: '0001-com-ubuntu-server-focal'
-          sku: '20_04-lts'
+          sku: '20_04-lts-gen2'
           version: 'latest'
         }
         osDisk: {
@@ -161,8 +171,16 @@ resource scalesetagent 'Microsoft.Compute/virtualMachineScaleSets@2021-04-01' = 
           osType: 'Linux'
         }
       }
-
+      securityProfile: {
+        encryptionAtHost: true
+        securityType: 'TrustedLaunch'
+        uefiSettings: {
+          secureBootEnabled: true
+          vTpmEnabled: true
+        }
+      }
     }
+    zoneBalance: false
   }
 }
 
