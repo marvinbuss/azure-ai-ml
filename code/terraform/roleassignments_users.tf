@@ -28,6 +28,12 @@ resource "azurerm_role_assignment" "users_role_assignment_key_vault_administrato
   principal_id         = var.users_object_id
 }
 
+resource "azurerm_role_assignment" "users_role_assignment_user_assigned_identity_managed_identity_operator" {
+  scope                = azurerm_user_assigned_identity.user_assigned_identity.id
+  role_definition_name = "Managed Identity Operator"
+  principal_id         = var.users_object_id
+}
+
 resource "azurerm_role_assignment" "users_role_assignment_machine_learning_workspace_azure_ai_developer" {
   scope                = azurerm_machine_learning_workspace.machine_learning_workspace.id
   role_definition_name = "Azure AI Developer"
@@ -45,6 +51,20 @@ resource "azurerm_role_assignment" "users_role_assignment_cognitive_account_cogn
   count                = var.open_ai_enabled ? 1 : 0
   scope                = azurerm_cognitive_account.cognitive_account[0].id
   role_definition_name = "Cognitive Services OpenAI Contributor"
+  principal_id         = var.users_object_id
+}
+
+resource "azurerm_role_assignment" "users_role_assignment_cognitive_account_cognitive_services_user" {
+  count                = var.open_ai_enabled ? 1 : 0
+  scope                = azurerm_cognitive_account.cognitive_account[0].id
+  role_definition_name = "Cognitive Services User"
+  principal_id         = var.users_object_id
+}
+
+resource "azurerm_role_assignment" "users_role_assignment_cognitive_account_cognitive_services_usages_reader" {
+  count                = var.open_ai_enabled ? 1 : 0
+  scope                = data.azurerm_subscription.current.id
+  role_definition_name = "Cognitive Services Usages Reader"
   principal_id         = var.users_object_id
 }
 
