@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.22.6.54827",
-      "templateHash": "11186906573646709450"
+      "version": "0.23.1.45101",
+      "templateHash": "13001232301606756494"
     }
   },
   "parameters": {
@@ -48,7 +48,7 @@
         "description": "Specifies an array with storage container names used for the Terraform deployment."
       }
     },
-    "servicePrincipalClientId": {
+    "servicePrincipalObjectId": {
       "type": "string",
       "metadata": {
         "description": "Specifies the client ID of a service principal used for the Terraform deployment."
@@ -121,8 +121,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.22.6.54827",
-              "templateHash": "9709745512376205138"
+              "version": "0.23.1.45101",
+              "templateHash": "16572266107484284180"
             }
           },
           "parameters": {
@@ -262,9 +262,6 @@
                             "tierToCool": {
                               "daysAfterCreationGreaterThan": 90
                             },
-                            "tierToArchive": {
-                              "daysAfterCreationGreaterThan": 365
-                            },
                             "delete": {
                               "daysAfterCreationGreaterThan": 730
                             }
@@ -272,9 +269,6 @@
                           "version": {
                             "tierToCool": {
                               "daysAfterCreationGreaterThan": 90
-                            },
-                            "tierToArchive": {
-                              "daysAfterCreationGreaterThan": 365
                             },
                             "delete": {
                               "daysAfterCreationGreaterThan": 730
@@ -293,7 +287,8 @@
                 }
               },
               "dependsOn": [
-                "[resourceId('Microsoft.Storage/storageAccounts', variables('storageNameCleaned'))]"
+                "[resourceId('Microsoft.Storage/storageAccounts', variables('storageNameCleaned'))]",
+                "[resourceId('Microsoft.Storage/storageAccounts/blobServices', variables('storageNameCleaned'), 'default')]"
               ]
             },
             {
@@ -320,10 +315,6 @@
                     "blockBlob"
                   ],
                   "trackingGranularityInDays": 1
-                },
-                "restorePolicy": {
-                  "enabled": true,
-                  "days": 7
                 }
               },
               "dependsOn": [
@@ -420,8 +411,8 @@
           "role": {
             "value": "Reader"
           },
-          "servicePrincipalClientId": {
-            "value": "[parameters('servicePrincipalClientId')]"
+          "servicePrincipalObjectId": {
+            "value": "[parameters('servicePrincipalObjectId')]"
           },
           "storageId": {
             "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroup001Name')), 'Microsoft.Resources/deployments', 'storage001'), '2022-09-01').outputs.storageId.value]"
@@ -433,8 +424,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.22.6.54827",
-              "templateHash": "16864030720677056925"
+              "version": "0.23.1.45101",
+              "templateHash": "10415221324938136093"
             }
           },
           "parameters": {
@@ -450,7 +441,7 @@
                 "StorageBlobDataOwner"
               ]
             },
-            "servicePrincipalClientId": {
+            "servicePrincipalObjectId": {
               "type": "string"
             }
           },
@@ -471,7 +462,7 @@
               "name": "[guid(uniqueString(subscription().subscriptionId, resourceId('Microsoft.Storage/storageAccounts', variables('storageName')), variables('roles')[parameters('role')]))]",
               "properties": {
                 "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', variables('roles')[parameters('role')])]",
-                "principalId": "[parameters('servicePrincipalClientId')]",
+                "principalId": "[parameters('servicePrincipalObjectId')]",
                 "principalType": "ServicePrincipal"
               }
             }
@@ -495,10 +486,10 @@
         "mode": "Incremental",
         "parameters": {
           "role": {
-            "value": "Reader"
+            "value": "StorageBlobDataOwner"
           },
-          "servicePrincipalClientId": {
-            "value": "[parameters('servicePrincipalClientId')]"
+          "servicePrincipalObjectId": {
+            "value": "[parameters('servicePrincipalObjectId')]"
           },
           "storageId": {
             "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, variables('resourceGroup001Name')), 'Microsoft.Resources/deployments', 'storage001'), '2022-09-01').outputs.storageId.value]"
@@ -510,8 +501,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.22.6.54827",
-              "templateHash": "16864030720677056925"
+              "version": "0.23.1.45101",
+              "templateHash": "10415221324938136093"
             }
           },
           "parameters": {
@@ -527,7 +518,7 @@
                 "StorageBlobDataOwner"
               ]
             },
-            "servicePrincipalClientId": {
+            "servicePrincipalObjectId": {
               "type": "string"
             }
           },
@@ -548,7 +539,7 @@
               "name": "[guid(uniqueString(subscription().subscriptionId, resourceId('Microsoft.Storage/storageAccounts', variables('storageName')), variables('roles')[parameters('role')]))]",
               "properties": {
                 "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', variables('roles')[parameters('role')])]",
-                "principalId": "[parameters('servicePrincipalClientId')]",
+                "principalId": "[parameters('servicePrincipalObjectId')]",
                 "principalType": "ServicePrincipal"
               }
             }

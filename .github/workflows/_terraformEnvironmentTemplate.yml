@@ -6,38 +6,38 @@ on:
       environment:
         required: true
         type: string
-        default: "dev"
-        description: "Specifies the environment of the deployment."
+        default: dev
+        description: Specifies the environment of the deployment.
       working_directory:
         required: true
         type: string
-        description: "Specifies the working directory."
+        description: Specifies the working directory.
       subscription_id:
         required: true
         type: string
-        description: "Specifies the Azure subscription id."
+        description: Specifies the Azure subscription id.
       terraform_version:
         required: true
         type: string
-        description: "Specifies the terraform version."
+        description: Specifies the terraform version.
       export_terraform_outputs:
         required: false
         type: boolean
         default: false
-        description: "Specifies whether terraform outputs should be exported."
+        description: Specifies whether terraform outputs should be exported.
     secrets:
       TENANT_ID:
         required: true
-        description: "Specifies the tenant id of the deployment."
+        description: Specifies the tenant id of the deployment.
       CLIENT_ID:
         required: true
-        description: "Specifies the client id."
+        description: Specifies the client id.
       CLIENT_SECRET:
         required: true
-        description: "Specifies the client secret."
+        description: Specifies the client secret.
     outputs:
       test:
-        description: "A sample value."
+        description: A sample value.
         value: ${{ jobs.apply.outputs.test }}
 
 jobs:

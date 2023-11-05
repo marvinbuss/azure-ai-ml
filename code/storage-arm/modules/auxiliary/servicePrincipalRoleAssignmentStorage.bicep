@@ -10,7 +10,7 @@ param storageId string
   'StorageBlobDataOwner'
 ])
 param role string
-param servicePrincipalClientId string
+param servicePrincipalObjectId string
 
 // Variables
 var storageName = length(split(storageId, '/')) >= 9 ? last(split(storageId, '/')) : 'incorrectSegmentLength'
@@ -32,7 +32,7 @@ resource synapseRoleAssignment 'Microsoft.Authorization/roleAssignments@2020-04-
   scope: storage
   properties: {
     roleDefinitionId: resourceId('Microsoft.Authorization/roleDefinitions', roles[role])
-    principalId: servicePrincipalClientId
+    principalId: servicePrincipalObjectId
     principalType: 'ServicePrincipal'
   }
 }

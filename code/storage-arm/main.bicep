@@ -23,7 +23,7 @@ param storageContainerNames array
 
 // Identity parameters
 @description('Specifies the client ID of a service principal used for the Terraform deployment.')
-param servicePrincipalClientId string
+param servicePrincipalObjectId string
 
 // Network parameters
 @description('Specifies the resource ID of the subnet to which all services will connect.')
@@ -63,7 +63,7 @@ module storage001RoleAssignmentServicePrincipalReader 'modules/auxiliary/service
   scope: resourceGroup001
   params: {
     role: 'Reader'
-    servicePrincipalClientId: servicePrincipalClientId
+    servicePrincipalObjectId: servicePrincipalObjectId
     storageId: storage001.outputs.storageId
   }
 }
@@ -72,8 +72,8 @@ module storage001RoleAssignmentServicePrincipalStorageBlobDataOwner 'modules/aux
   name: 'storage001RoleAssignmentServicePrincipalStorageBlobDataOwner'
   scope: resourceGroup001
   params: {
-    role: 'Reader'
-    servicePrincipalClientId: servicePrincipalClientId
+    role: 'StorageBlobDataOwner'
+    servicePrincipalObjectId: servicePrincipalObjectId
     storageId: storage001.outputs.storageId
   }
 }
