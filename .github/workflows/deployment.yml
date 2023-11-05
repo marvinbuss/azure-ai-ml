@@ -4,25 +4,26 @@ on:
     branches:
       - main
     paths:
-      - "code/terraform/**"
-      - ".github/workflows/deployment"
+      - code/terraform/**
+      - .github/workflows/deployment
 
   pull_request:
     branches:
       - main
     paths:
-      - "code/terraform/**"
-      - ".github/workflows/deployment"
+      - code/terraform/**
+      - .github/workflows/deployment
 
 jobs:
   terraform:
     uses: ./.github/workflows/_terraformEnvironmentTemplate.yml
-    name: "Terraform Deployment"
+    name: Terraform Deployment
     with:
-      environment: "dev"
-      working_directory: "./code/terraform"
-      subscription_id: "8f171ff9-2b5b-4f0f-aed5-7fa360a1d094"
-      terraform_version: "1.5.6"
+      environment: dev
+      project: project1
+      working_directory: ./code/terraform
+      subscription_id: 8f171ff9-2b5b-4f0f-aed5-7fa360a1d094
+      terraform_version: 1.5.6
       export_terraform_outputs: false
     secrets:
       TENANT_ID: ${{ secrets.TENANT_ID }}
