@@ -1,0 +1,100 @@
+{
+  "type": "Microsoft.Authorization/policySetDefinitions",
+  "apiVersion": "2021-06-01",
+  "name": "Cmplnt-Srch",
+  "scope": null,
+  "properties": {
+    "displayName": "Compliant Azure Search Policy Set",
+    "description": "This policy set ensures compliant Azure Search.",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "Search"
+    },
+    "policyDefinitionGroups": [
+      {
+        "name": "Encryption",
+        "category": "Data Protection",
+        "displayName": "Ensure Disgnostics is using secure encryption",
+        "description": "Policy to ensure Disgnostics is using secure encryption"
+      },
+      {
+        "name": "Network",
+        "category": "Network Security",
+        "displayName": "Ensure Disgnostics is not accessible over the public internet",
+        "description": "Policy to ensure Disgnostics is not accessible over the public internet"
+      },
+      {
+        "name": "Identity",
+        "category": "Identity Management",
+        "displayName": "Ensure usage of centralized identity and auhtorization system for Disgnostics",
+        "description": "Policy to ensure Disgnostics is not using local authorization"
+      },
+      {
+        "name": "Logging",
+        "category": "Logging and Threat Detection",
+        "displayName": "Ensure Disgnostics is logging all events to Log Analytics",
+        "description": "Policy to ensure Disgnostics is logging all events to Log Analytics workspace"
+      }
+    ],
+    "parameters": {},
+    "policyDefinitions": [
+      {
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/ee980b6d-0eca-4501-8d54-f6290fd512c3",
+        "parameters": {
+          "effect": {
+            "value": "Deny"
+          }
+        },
+        "groupNames": [
+          "Network"
+        ]
+      },
+      {
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/a049bf77-880b-470f-ba6d-9f21c530cf83",
+        "parameters": {
+          "effect": {
+            "value": "Deny"
+          }
+        },
+        "groupNames": [
+          "Network"
+        ]
+      },
+      {
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/9cee519f-d9c1-4fd9-9f79-24ec3449ed30",
+        "parameters": {
+          "effect": {
+            "value": "Modify"
+          }
+        },
+        "groupNames": [
+          "Network"
+        ]
+      }
+      // , // Cannot be enabled because Azure Machine Learning uses the Azure Cognitive Search Key
+      // {
+      //   "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/6300012e-e9a4-4649-b41f-a85f5c43be91",
+      //   "parameters": {
+      //     "effect": {
+      //       "value": "Deny"
+      //     }
+      //   },
+      //   "groupNames": [
+      //     "Network"
+      //   ]
+      // },
+      // {
+      //   "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/4eb216f2-9dba-4979-86e6-5d7e63ce3b75",
+      //   "parameters": {
+      //     "effect": {
+      //       "value": "Modify"
+      //     }
+      //   },
+      //   "groupNames": [
+      //     "Network"
+      //   ]
+      // }
+    ]
+  }
+}
