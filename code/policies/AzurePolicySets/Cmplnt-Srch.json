@@ -72,29 +72,6 @@
           "Network"
         ]
       }
-      // , // Cannot be enabled because Azure Machine Learning uses the Azure Cognitive Search Key
-      // {
-      //   "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/6300012e-e9a4-4649-b41f-a85f5c43be91",
-      //   "parameters": {
-      //     "effect": {
-      //       "value": "Deny"
-      //     }
-      //   },
-      //   "groupNames": [
-      //     "Network"
-      //   ]
-      // },
-      // {
-      //   "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/4eb216f2-9dba-4979-86e6-5d7e63ce3b75",
-      //   "parameters": {
-      //     "effect": {
-      //       "value": "Modify"
-      //     }
-      //   },
-      //   "groupNames": [
-      //     "Network"
-      //   ]
-      // }
     ]
   }
 }
