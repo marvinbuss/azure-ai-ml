@@ -15,3 +15,9 @@ resource "azurerm_resource_group" "resource_group_cs" {
   location = var.location
   tags     = var.tags
 }
+
+resource "azurerm_resource_group" "resource_group_asp" {
+  name     = "${local.prefix}-asp"
+  location = var.location
+  tags     = var.tags
+}
