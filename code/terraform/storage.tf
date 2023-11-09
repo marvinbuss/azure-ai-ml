@@ -16,7 +16,14 @@ resource "azurerm_storage_account" "storage" {
     container_delete_retention_policy {
       days = 7
     }
-    cors_rule {
+    cors_rule { # Required for Azure Open AI
+      allowed_headers    = ["*"]
+      allowed_methods    = ["GET", "OPTIONS", "POST", "PUT"]
+      allowed_origins    = ["*"]
+      exposed_headers    = ["*"]
+      max_age_in_seconds = 200
+    }
+    cors_rule { # Required for Azure ML
       allowed_headers    = ["*"]
       allowed_methods    = ["GET", "HEAD"]
       allowed_origins    = ["https://mlworkspace.azure.ai", "https://ml.azure.com", "https://*.ml.azure.com"]
