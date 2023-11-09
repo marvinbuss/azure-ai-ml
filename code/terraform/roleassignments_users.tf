@@ -40,6 +40,13 @@ resource "azurerm_role_assignment" "users_role_assignment_machine_learning_works
   principal_id         = var.users_object_id
 }
 
+resource "azurerm_role_assignment" "users_role_assignment_search_service_search_service_contributor" {
+  count                = var.search_service_enabled ? 1 : 0
+  scope                = azurerm_search_service.search_service[0].id
+  role_definition_name = "Search Service Contributor"
+  principal_id         = var.users_object_id
+}
+
 resource "azurerm_role_assignment" "users_role_assignment_search_service_search_index_data_contributor" {
   count                = var.search_service_enabled ? 1 : 0
   scope                = azurerm_search_service.search_service[0].id
