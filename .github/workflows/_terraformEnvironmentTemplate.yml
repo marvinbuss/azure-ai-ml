@@ -8,6 +8,10 @@ on:
         type: string
         default: dev
         description: Specifies the environment of the deployment.
+      project_name:
+        required: true
+        type: string
+        description: "Specifies the name of the operating entity."
       working_directory:
         required: true
         type: string
@@ -88,7 +92,7 @@ jobs:
         id: node_setup
         uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: 18
 
       # Setup Terraform
       - name: Setup Terraform
@@ -108,7 +112,7 @@ jobs:
         id: terraform_init
         working-directory: ${{ inputs.working_directory }}
         run: |
-          terraform init
+          terraform init -backend-config=../../config/${{ inputs.project_name }}/${{ inputs.environment }}/azurerm.tfbackend
 
       # Terraform Validate
       - name: Terraform Validate
@@ -122,7 +126,7 @@ jobs:
         id: terraform_plan
         working-directory: ${{ inputs.working_directory }}
         run: |
-          terraform plan -var-file vars.${{ inputs.environment }}.tfvars -input=false
+          terraform plan -var-file=../../config/${{ inputs.project_name }}/${{ inputs.environment }}/vars.tfvars -input=false
 
   apply:
     name: Terraform Apply
@@ -147,7 +151,7 @@ jobs:
         id: node_setup
         uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: 18
 
       # Setup Terraform
       - name: Setup Terraform
@@ -173,13 +177,13 @@ jobs:
       - name: Terraform Init
         working-directory: ${{ inputs.working_directory }}
         run: |
-          terraform init
+          terraform init -backend-config=../../config/${{ inputs.project_name }}/${{ inputs.environment }}/azurerm.tfbackend
 
       # Terraform Apply
       - name: Terraform Apply
         working-directory: ${{ inputs.working_directory }}
         run: |
-          terraform apply -var-file vars.${{ inputs.environment }}.tfvars -auto-approve -input=false
+          terraform apply -var-file=../../config/${{ inputs.project_name }}/${{ inputs.environment }}/vars.tfvars -auto-approve -input=false
 
       # Terraform Export Outputs
       - name: Terraform Export Outputs
