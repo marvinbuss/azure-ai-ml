@@ -3,5 +3,5 @@ resource "azurerm_role_assignment" "uai_role_assignment_storage_blob_reader" {
 
   scope                = azurerm_storage_account.storage.id
   role_definition_name = "Storage Blob Data Reader"
-  principal_id         = azurerm_cognitive_account.cognitive_account.identity[0].principal_id
+  principal_id         = azurerm_cognitive_account.cognitive_account[0].identity[0].principal_id
 }
