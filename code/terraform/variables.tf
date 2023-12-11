@@ -105,11 +105,21 @@ variable "cognitive_services" {
 
 // Identity variables
 variable "users_object_id" {
-  description = "Specifies the object ID of the Azure AD group/Entra ID group."
+  description = "Specifies the object ID of the Azure AD group/Entra ID group used for users."
   type        = string
   sensitive   = false
   validation {
     condition     = length(var.users_object_id) >= 2
+    error_message = "Please specify a valid object ID."
+  }
+}
+
+variable "readers_object_id" {
+  description = "Specifies the object ID of the Azure AD group/Entra ID group used for readers."
+  type        = string
+  sensitive   = false
+  validation {
+    condition     = length(var.readers_object_id) >= 2
     error_message = "Please specify a valid object ID."
   }
 }

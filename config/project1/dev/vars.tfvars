@@ -42,7 +42,8 @@ cognitive_services = {
 }
 
 // Identity variables
-users_object_id = "1cd588b3-b024-44c5-8bbd-81a9cef8d47a"
+users_object_id   = "1cd588b3-b024-44c5-8bbd-81a9cef8d47a"
+readers_object_id = "2194f6ef-f7ff-44ca-b16a-de35e40ad4af"
 
 // Network variables
 subnet_id                                      = "/subscriptions/8f171ff9-2b5b-4f0f-aed5-7fa360a1d094/resourceGroups/mycrp-prd-logic-network-rg/providers/Microsoft.Network/virtualNetworks/mycrp-prd-logic-vnet001/subnets/PeSubnet"
