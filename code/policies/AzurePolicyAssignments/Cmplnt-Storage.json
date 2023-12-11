@@ -1,0 +1,25 @@
+{
+  "type": "Microsoft.Authorization/policyAssignments",
+  "apiVersion": "2022-06-01",
+  "name": "Cmplnt-Storage",
+  "scope": null,
+  "location": "${default_location}",
+  "identity": {
+    "type": "SystemAssigned"
+  },
+  "properties": {
+    "displayName": "Compliant Storage Policy Assignment",
+    "description": "This policy assignment ensures compliant Storage.",
+    "enforcementMode": "Default",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "Storage"
+    },
+    "nonComplianceMessages": [],
+    "notScopes": [],
+    "overrides": [],
+    "resourceSelectors": [],
+    "parameters": {},
+    "policyDefinitionId": "${scope_id}/providers/Microsoft.Authorization/policySetDefinitions/Cmplnt-Storage"
+  }
+}

@@ -1,0 +1,298 @@
+{
+  "type": "Microsoft.Authorization/policySetDefinitions",
+  "apiVersion": "2021-06-01",
+  "name": "Cmplnt-Storage",
+  "scope": null,
+  "properties": {
+    "displayName": "Compliant Storage Policy Set",
+    "description": "This policy set ensures compliant Storage.",
+    "policyType": "Custom",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "Storage"
+    },
+    "policyDefinitionGroups": [
+      {
+        "name": "Encryption",
+        "category": "Data Protection",
+        "displayName": "Ensure Storage is using secure encryption",
+        "description": "Policy to ensure Storage is using secure encryption"
+      },
+      {
+        "name": "Network",
+        "category": "Network Security",
+        "displayName": "Ensure Storage is not accessible over the public internet",
+        "description": "Policy to ensure Storage is not accessible over the public internet"
+      },
+      {
+        "name": "Identity",
+        "category": "Identity Management",
+        "displayName": "Ensure usage of centralized identity and auhtorization system for Storage",
+        "description": "Policy to ensure Storage is not using local authorization"
+      },
+      {
+        "name": "Logging",
+        "category": "Logging and Threat Detection",
+        "displayName": "Ensure Storage is logging all events to Log Analytics",
+        "description": "Policy to ensure Storage is logging all events to Log Analytics workspace"
+      }
+    ],
+    "parameters": {},
+    "policyDefinitions": [
+      {
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/2a1a9cdf-e04d-429a-8416-3bfb72a1b26f",
+        "parameters": {
+          "effect": {
+            "value": "Deny"
+          }
+        },
+        "groupNames": [
+          "Network"
+        ]
+      },
+      {
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/34c877ad-507e-4c82-993e-3452a6e0ad3c",
+        "parameters": {
+          "effect": {
+            "value": "Deny"
+          }
+        },
+        "groupNames": [
+          "Network"
+        ]
+      },
+      {
+        "policyDefinitionId": "${scope_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-NetworkAclsBypass-Storage",
+        "parameters": {
+          "effect": {
+            "value": "Deny"
+          },
+          "allowedBypassOptions": {
+            "value": [
+              "None",
+              "AzureServices"
+            ]
+          }
+        },
+        "groupNames": [
+          "Network"
+        ]
+      },
+      {
+        "policyDefinitionId": "${scope_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-NetworkAclsVirtualNetworkRules-Storage",
+        "parameters": {
+          "effect": {
+            "value": "Deny"
+          }
+        },
+        "groupNames": [
+          "Network"
+        ]
+      },
+      {
+        "policyDefinitionId": "${scope_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-ResourceAccessRulesTenantId-Storage",
+        "parameters": {
+          "effect": {
+            "value": "Deny"
+          }
+        },
+        "groupNames": [
+          "Network"
+        ]
+      },
+      {
+        "policyDefinitionId": "${scope_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-ResourceAccessRulesResourceId-Storage",
+        "parameters": {
+          "effect": {
+            "value": "Deny"
+          }
+        },
+        "groupNames": [
+          "Network"
+        ]
+      },
+      {
+        "policyDefinitionId": "${scope_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-CORS-Storage",
+        "parameters": {
+          "effect": {
+            "value": "Deny"
+          }
+        },
+        "groupNames": [
+          "Network"
+        ]
+      },
+      {
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/404c3081-a854-4457-ae30-26a93ef643f9",
+        "parameters": {
+          "effect": {
+            "value": "Deny"
+          }
+        },
+        "groupNames": [
+          "Encryption"
+        ]
+      },
+      {
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/f81e3117-0093-4b17-8a60-82363134f0eb",
+        "parameters": {
+          "effect": {
+            "value": "Modify"
+          }
+        },
+        "groupNames": [
+          "Encryption"
+        ]
+      },
+      {
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/4733ea7b-a883-42fe-8cac-97454c2a9e4a",
+        "parameters": {
+          "effect": {
+            "value": "Deny"
+          }
+        },
+        "groupNames": [
+          "Encryption"
+        ]
+      },
+      {
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/fe83a0eb-a853-422d-aac2-1bffd182c5d0",
+        "parameters": {
+          "effect": {
+            "value": "Deny"
+          },
+          "minimumTlsVersion": {
+            "value": "TLS1_2"
+          }
+        },
+        "groupNames": [
+          "Encryption"
+        ]
+      },
+      {
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/4fa4b6c0-31ca-4c0d-b10d-24b96f62a751",
+        "parameters": {
+          "effect": {
+            "value": "Deny"
+          }
+        },
+        "groupNames": [
+          "Identity"
+        ]
+      },
+      {
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/13502221-8df0-4414-9937-de9c5c4e396b",
+        "parameters": {
+          "effect": {
+            "value": "Modify"
+          }
+        },
+        "groupNames": [
+          "Identity"
+        ]
+      },
+      {
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/8c6a50c6-9ffd-4ae7-986f-5fa6111f9a54",
+        "parameters": {
+          "effect": {
+            "value": "Deny"
+          }
+        },
+        "groupNames": [
+          "Identity"
+        ]
+      },
+      {
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/bc1b984e-ddae-40cc-801a-050a030e4fbe",
+        "parameters": {
+          "effect": {
+            "value": "Audit"
+          }
+        },
+        "groupNames": [
+          "Identity"
+        ]
+      },
+      {
+        "policyDefinitionId": "${scope_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-IsLocalUserEnabled-Storage",
+        "parameters": {
+          "effect": {
+            "value": "Audit"
+          }
+        },
+        "groupNames": [
+          "Identity"
+        ]
+      },
+      {
+        "policyDefinitionId": "${scope_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-IsSftpEnabled-Storage",
+        "parameters": {
+          "effect": {
+            "value": "Audit"
+          }
+        },
+        "groupNames": [
+          "Identity"
+        ]
+      },
+      {
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/37e0d2fe-28a5-43d6-a273-67d37d1f5606",
+        "parameters": {
+          "effect": {
+            "value": "Deny"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/7433c107-6db4-4ad1-b57a-a76dce0154a1",
+        "parameters": {
+          "effect": {
+            "value": "Audit"
+          },
+          "listOfAllowedSKUs": {
+            "value": [
+              "Standard_ZRS",
+              "Standard_GZRS",
+              "Standard_GRS"
+            ]
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionId": "/providers/Microsoft.Authorization/policyDefinitions/92a89a79-6c52-4a7e-a03f-61306fc49312",
+        "parameters": {
+          "effect": {
+            "value": "Deny"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionId": "${scope_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-AllowedCopyScope-Storage",
+        "parameters": {
+          "effect": {
+            "value": "Deny"
+          },
+          "allowedCopyScope": {
+            "value": "AAD"
+          }
+        },
+        "groupNames": []
+      },
+      {
+        "policyDefinitionId": "${scope_id}/providers/Microsoft.Authorization/policyDefinitions/Deny-ContainerDeleteRetentionPolicy-Storage",
+        "parameters": {
+          "effect": {
+            "value": "Deny"
+          },
+          "minContainerDeleteRetentionInDays": {
+            "value": 7
+          }
+        },
+        "groupNames": []
+      }
+    ]
+  }
+}
