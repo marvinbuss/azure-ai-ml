@@ -13,11 +13,6 @@ terraform {
   }
 
   backend "azurerm" {
-    environment          = "public"
-    resource_group_name  = "mycrp-prd-cicd"
-    storage_account_name = "mycrpprdstg001"
-    container_name       = "data-product-analytics"
-    key                  = "terraform.tfstate"
     use_azuread_auth     = true
     # use_oidc             = true
   }
